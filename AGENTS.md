@@ -16,7 +16,7 @@ Metering model: `EV100 = log2(N²/t) − log2(ISO/100)`, luminance `L = K·N²/(
 
 iOS 26.0 minimum, Swift 6 language mode with strict concurrency, SwiftUI, iPhone only. UI follows Apple's Human Interface Guidelines and uses **native components only**, with Liquid Glass through the native SwiftUI APIs (`glassEffect`, `GlassEffectContainer`, standard toolbars and controls); no custom-drawn replacements for system controls. The camera preview is full screen with glass controls over it, so check legibility over bright and dark scenes. The project uses the Xcode 27 text project format (`project.xcproj`). Prefer the Xcode plugin tools over hand-editing the project file. Physical iPhone is required for camera work; the simulator has no camera.
 
-Bundle IDs: Release is `com.sergiorodriguez.Midgray` (capital M, the one Xcode registered first; the lowercase form could not be registered with the free Personal Team) and Debug is `com.sergiorodriguez.Midgray.dev`. Apple treats bundle IDs as case-insensitive. Confirm the Release ID in the Apple Developer portal when the paid program is bought; the fallback is `com.srdz.midgray`. Changing it is cheap until the app record is created in App Store Connect.
+Bundle IDs: the app uses `com.sergiorodriguez.Midgray` in every configuration (capital M, the one Xcode registered with the free Personal Team; the lowercase form could not be registered), and the test targets use `com.sergiorodriguez.MidgrayTests` and `com.sergiorodriguez.MidgrayUITests`. Apple treats bundle IDs as case-insensitive. Confirm the Release ID in the Apple Developer portal when the paid program is bought; the fallback is `com.srdz.midgray`. Changing it is cheap until the app record is created in App Store Connect.
 
 ## Architecture
 
