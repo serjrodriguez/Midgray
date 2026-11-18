@@ -1,0 +1,17 @@
+{
+  "sourceLanguage" : "en",
+  "strings" : {
+    "NSCameraUsageDescription" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Midgray usa la cámara para medir la luz de una escena. No guarda fotos ni envía datos."
+          }
+        }
+      }
+    }
+  },
+  "version" : "1.3"
+}

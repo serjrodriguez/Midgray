@@ -8,6 +8,7 @@
     "development": "en",
     "supported": [
       "Base",
+      "es",
     ],
   },
   "files": [
@@ -43,6 +44,7 @@
         "DEVELOPMENT_TEAM": "769NAE85RJ",
         "ENABLE_PREVIEWS": "YES",
         "GENERATE_INFOPLIST_FILE": "YES",
+        "INFOPLIST_KEY_NSCameraUsageDescription": "Midgray uses the camera to measure the light of a scene. It does not save photos or send data.",
         "INFOPLIST_KEY_UIApplicationSceneManifest_Generation": "YES",
         "INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents": "YES",
         "INFOPLIST_KEY_UILaunchScreen_Generation": "YES",
@@ -199,6 +201,7 @@
     "SDKROOT": "iphoneos",
     "SWIFT_ACTIVE_COMPILATION_CONDITIONS[config=Debug]": "DEBUG $(inherited)",
     "SWIFT_COMPILATION_MODE[config=Release]": "wholemodule",
+    "SWIFT_EMIT_LOC_STRINGS": "YES",
     "SWIFT_OPTIMIZATION_LEVEL[config=Debug]": "-Onone",
     "VALIDATE_PRODUCT[config=Release]": "YES",
   },
