@@ -1,0 +1,15 @@
+{
+  "originHash" : "0015d71c1427c8fdf747c711ea5c1fb4073a7d4c6cea2ffc94c54c24da8505ed",
+  "pins" : [
+    {
+      "identity" : "srdzpermissions",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/serjrodriguez/SrdzPermissions",
+      "state" : {
+        "revision" : "c86ca4fecfe002598b7f8c58d013411bca480494",
+        "version" : "0.1.0"
+      }
+    }
+  ],
+  "version" : 3
+}

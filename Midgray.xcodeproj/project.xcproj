@@ -11,6 +11,15 @@
       "es",
     ],
   },
+  "packages": [
+    {
+      "kind": "remote",
+      "repository": "https://github.com/serjrodriguez/SrdzPermissions",
+      "version": {
+        "up-to-next-major-version": "0.1.0",
+      },
+    },
+  ],
   "files": [
     { "kind": "folder", "path": "Midgray", "target-membership": [ "Midgray" ] },
     { "kind": "folder", "path": "MidgrayTests", "target-membership": [ "MidgrayTests" ] },
@@ -35,6 +44,13 @@
         "compile-sources",
         "frameworks",
         "resources",
+      ],
+      "package-product-members": [
+        {
+          "package": "SrdzPermissions",
+          "product-name": "SrdzPermissionsCamera",
+          "build-phase": { "build-phase": "frameworks" },
+        },
       ],
       "build-settings": {
         "ASSETCATALOG_COMPILER_APPICON_NAME": "AppIcon",
@@ -81,6 +97,13 @@
         "compile-sources",
         "frameworks",
         "resources",
+      ],
+      "package-product-members": [
+        {
+          "package": "SrdzPermissions",
+          "product-name": "SrdzPermissionsTesting",
+          "build-phase": { "build-phase": "frameworks" },
+        },
       ],
       "build-settings": {
         "BUNDLE_LOADER": "$(TEST_HOST)",
