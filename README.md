@@ -15,7 +15,7 @@ Midgray uses the rear camera to measure the light of a scene and suggests the ex
 - First-launch onboarding
 - Spanish and English, dark mode, Dynamic Type
 - Portrait and landscape
-- Liquid Glass interface with native components
+- Liquid Glass interface with native components and system toolbar actions
 - Layouts that adapt to the foldable iPhone Duo
 
 ## Tech
