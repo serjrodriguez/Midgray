@@ -13,12 +13,14 @@ Midgray uses the rear camera to measure the light of a scene and suggests the ex
 - EV lock and compensation
 - Lens picker and manual calibration
 - First-launch onboarding
-- Spanish and English, dark mode, Dynamic Type, VoiceOver
+- Spanish and English, dark mode, Dynamic Type
+- Portrait and landscape
+- Liquid Glass interface with native components
 - Layouts that adapt to the foldable iPhone Duo
 
 ## Tech
 
-- Swift 6, SwiftUI, iOS 18+
+- Swift 6, SwiftUI, iOS 26+
 - MVVM, repositories only for external sources and persistence
 - Permissions with [SrdzPermissions](https://github.com/serjrodriguez/SrdzPermissions)
 - Swift Testing
