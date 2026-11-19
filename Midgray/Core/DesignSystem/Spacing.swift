@@ -5,7 +5,6 @@
 //  Created by Sergio Rodriguez on 19/11/26.
 //
 
-import Foundation
 import SwiftUI
 
 nonisolated enum Spacing {
