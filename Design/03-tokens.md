@@ -40,8 +40,23 @@ Todo debe respetar Dynamic Type: los valores propios se definen con `@ScaledMetr
 
 ## Espaciado y radios
 
-- Espaciado: 4, 8, 12, 16, 24, 40.
-- Radios: celda 14–16, hoja 26, panel de vidrio 34, píldora completa.
+**Espaciado: cuadrícula de 4 pt**, de 4 a 40: `s4, s8, s12, s16, s20, s24, s28, s32, s36, s40`. El nombre lleva el valor y se usa como `Spacing.s16`.
+
+**Radios:** `r14` (chips y celdas en fila), `r16` (celda de valor), `r26` (tarjetas de grupo y hojas), `r34` (panel de vidrio) y `r36` (tarjeta del icono en onboarding). Se usan como `Radius.r16`. Las píldoras no son un token numérico: en SwiftUI son `Capsule()`.
+
+**Convención:** `enum` sin casos como espacio de nombres, constantes `static let` de tipo `CGFloat`, tipo marcado como `nonisolated` y nombre con el valor (`s`, `r`) en lugar de `spacing_16`. Más adelante, una segunda capa con nombres de uso (por ejemplo `Radius.valueCell = r16`) para que las vistas no dependan de los números.
+
+### Ajuste del diseño a la cuadrícula
+
+El primer diseño usaba separaciones de 6 y 10 pt que no están en la cuadrícula. En código se redondean, y la diferencia es de 2 pt como máximo; el panel crece unos 8 pt en horizontal y cabe sin problema.
+
+| En Figma | En código |
+|---|---|
+| 6 (separación entre chips y entre filas) | `s8` |
+| 6 (etiqueta pequeña sobre su contenido) | `s4` |
+| 10 (relleno de celdas y separación en el panel) | `s12` |
+
+El archivo de Figma se actualizará a estos valores cuando se retoque el diseño; hasta entonces manda este documento.
 
 ## Componentes reutilizables (Core/DesignSystem)
 
