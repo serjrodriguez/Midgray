@@ -7,6 +7,6 @@
 
 import Foundation
 
-protocol LightSensing: Sendable {
+nonisolated protocol LightSensing: Sendable {
     func readings() -> AsyncStream<CameraReading>
 }

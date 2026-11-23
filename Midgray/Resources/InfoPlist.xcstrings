@@ -22,6 +22,12 @@
     "NSCameraUsageDescription" : {
       "extractionState" : "manual",
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Midgray uses the camera to measure the light of a scene. It does not save photos or send data."
+          }
+        },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
