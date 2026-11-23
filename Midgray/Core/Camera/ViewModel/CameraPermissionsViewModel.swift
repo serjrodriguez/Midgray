@@ -8,13 +8,6 @@
 import Foundation
 import SrdzPermissionsCore
 
-nonisolated enum CameraAccess: Equatable {
-    case undetermined
-    case granted
-    case denied
-    case restricted
-}
-
 @Observable
 final class CameraPermissionsViewModel {
     private(set) var access: CameraAccess = .undetermined
