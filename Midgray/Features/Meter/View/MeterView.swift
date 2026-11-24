@@ -17,7 +17,7 @@ struct MeterView: View {
     var body: some View {
         VStack {
             switch viewModel.state {
-                case .idle: Text("Midiendo...")
+                case .idle: Text("Measuring...")
                 case .measuring(let readout):
                     VStack {
                         Text(readout.ev.description)

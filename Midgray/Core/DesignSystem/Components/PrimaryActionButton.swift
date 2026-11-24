@@ -37,8 +37,8 @@ struct PrimaryActionButton: View {
             .ignoresSafeArea()
 
         VStack {
-            PrimaryActionButton(title: "Medir", isProminent: true, action: {})
-            PrimaryActionButton(title: "Retenido · toca para medir de nuevo", isProminent: false, action: {})
+            PrimaryActionButton(title: "Measure", isProminent: true, action: {})
+            PrimaryActionButton(title: "Held · tap to measure again", isProminent: false, action: {})
         }
         .padding()
     }
@@ -51,8 +51,8 @@ struct PrimaryActionButton: View {
             .ignoresSafeArea()
 
         VStack {
-            PrimaryActionButton(title: "Medir", isProminent: true, action: {})
-            PrimaryActionButton(title: "Retenido · toca para medir de nuevo", isProminent: false, action: {})
+            PrimaryActionButton(title: "Measure", isProminent: true, action: {})
+            PrimaryActionButton(title: "Held · tap to measure again", isProminent: false, action: {})
         }
         .padding()
         .dynamicTypeSize(.accessibility3)
