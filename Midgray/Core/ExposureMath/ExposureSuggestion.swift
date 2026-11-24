@@ -7,7 +7,7 @@
 
 import Foundation
 
-nonisolated enum ExposurePriority {
+nonisolated enum ExposurePriority: Equatable {
     case aperture(Double)
     case shutter(Double)
 }
