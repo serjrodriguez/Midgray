@@ -18,11 +18,13 @@ nonisolated struct MeterReadout: Equatable {
 nonisolated enum MeterState: Equatable {
     case idle
     case measuring(MeterReadout)
+    case outOfRange(MeterReadout)
 }
 
 @Observable
 final class MeterViewModel {
-    private(set) var ev: Double?
+    private var ev: Double?
+    private var exposureOffset: Double?
     
     private let sensor: any LightSensing
     private var smoother: EVSmoother
@@ -33,6 +35,7 @@ final class MeterViewModel {
     private(set) var compensation: Double = 0
 
     nonisolated static let compensationRange: ClosedRange<Double> = -3...3
+    nonisolated static let outOfRangeThreshold: Double = 1
 
     private var compensatedEV: Double? {
         ev.map { $0 - compensation }
@@ -53,15 +56,18 @@ final class MeterViewModel {
               let compensatedEV = compensatedEV
         else { return MeterState.idle }
 
-        return MeterState.measuring(
-            MeterReadout(
-                ev: ev,
-                compensatedEV: compensatedEV,
-                suggestion: suggestion,
-                equivalents: equivalents
-            )
+        let readout = MeterReadout(
+            ev: ev,
+            compensatedEV: compensatedEV,
+            suggestion: suggestion,
+            equivalents: equivalents
         )
 
+        if let exposureOffset, abs(exposureOffset) > Self.outOfRangeThreshold {
+            return MeterState.outOfRange(readout)
+        }
+
+        return MeterState.measuring(readout)
     }
 
     init(sensor: any LightSensing,
@@ -92,6 +98,7 @@ final class MeterViewModel {
                 guard let value = reading.ev100 else { continue }
 
                 ev = smoother.add(value)
+                exposureOffset = reading.exposureTargetOffset
             }
         }
     }
@@ -101,5 +108,6 @@ final class MeterViewModel {
         task = nil
         smoother.reset()
         ev = nil
+        exposureOffset = nil
     }
 }

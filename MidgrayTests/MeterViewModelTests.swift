@@ -30,8 +30,10 @@ struct MeterViewModelTests {
     }
 
     func currentReadout(_ viewModel: MeterViewModel) -> MeterReadout? {
-        guard case .measuring(let readout) = viewModel.state else { return nil }
-        return readout
+        switch viewModel.state {
+        case .idle: return nil
+        case .measuring(let readout), .outOfRange(let readout): return readout
+        }
     }
 
     func waitUntil(_ condition: () -> Bool) async -> Bool {
@@ -232,5 +234,62 @@ struct MeterViewModelTests {
         #expect(readout.compensatedEV == readout.ev)
         #expect(readout.suggestion != nil)
         #expect(!readout.equivalents.isEmpty)
+    }
+
+    nonisolated static let reliableOffsets: [Double] = [0, 0.5, -0.5, 1, -1]
+
+    @Test(arguments: MeterViewModelTests.reliableOffsets)
+    func smallOffsetsKeepTheMeterMeasuring(offset: Double) async throws {
+        let viewModel = try makeViewModel([Self.reading(offset: offset)])
+
+        viewModel.start()
+        let received = await waitUntil { currentReadout(viewModel) != nil }
+        #expect(received)
+
+        guard case .measuring = viewModel.state else {
+            Issue.record("Expected .measuring for offset \(offset), got \(viewModel.state)")
+            return
+        }
+    }
+
+    nonisolated static let unreliableOffsets: [Double] = [1.5, -1.5, 3, -3]
+
+    @Test(arguments: MeterViewModelTests.unreliableOffsets)
+    func largeOffsetsFlagTheReadingAsOutOfRange(offset: Double) async throws {
+        let viewModel = try makeViewModel([Self.reading(offset: offset)])
+
+        viewModel.start()
+        let received = await waitUntil { currentReadout(viewModel) != nil }
+        #expect(received)
+
+        guard case .outOfRange(let readout) = viewModel.state else {
+            Issue.record("Expected .outOfRange for offset \(offset), got \(viewModel.state)")
+            return
+        }
+        #expect(abs(readout.ev - (Self.base + offset)) < 1e-9)
+    }
+
+    @Test
+    func recoversWhenTheOffsetReturnsToRange() async throws {
+        let viewModel = try makeViewModel([Self.reading(offset: 2), Self.reading(offset: 0)])
+
+        viewModel.start()
+        let received = await waitUntil {
+            if case .measuring = viewModel.state { return true }
+            return false
+        }
+        #expect(received)
+    }
+
+    @Test
+    func stopClearsTheOutOfRangeFlag() async throws {
+        let viewModel = try makeViewModel([Self.reading(offset: 2)])
+
+        viewModel.start()
+        let received = await waitUntil { currentReadout(viewModel) != nil }
+        #expect(received)
+
+        viewModel.stop()
+        #expect(viewModel.state == .idle)
     }
 }
