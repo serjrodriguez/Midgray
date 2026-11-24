@@ -19,28 +19,49 @@ struct EquivalentsRow: View {
                 .font(.caption2)
                 .foregroundStyle(.secondary)
 
-            ScrollView(.horizontal) {
-                GlassEffectContainer {
-                    HStack(spacing: Spacing.s8) {
-                        ForEach(equivalents, id: \.aperture) { equivalent in
-                            Button {
-                                onSelect(equivalent.aperture)
-                            } label: {
-                                EquivalentChip(
-                                    title: ExposureFormatter.equivalent(
-                                        aperture: equivalent.aperture,
-                                        exposureTime: equivalent.exposureTime
-                                    ),
-                                    isSelected: equivalent.aperture == selectedAperture
-                                )
+            ScrollViewReader { proxy in
+                ScrollView(.horizontal) {
+                    GlassEffectContainer {
+                        HStack(spacing: Spacing.s8) {
+                            ForEach(equivalents, id: \.aperture) { equivalent in
+                                Button {
+                                    onSelect(equivalent.aperture)
+                                } label: {
+                                    EquivalentChip(
+                                        title: ExposureFormatter.equivalent(
+                                            aperture: equivalent.aperture,
+                                            exposureTime: equivalent.exposureTime
+                                        ),
+                                        isSelected: equivalent.aperture == selectedAperture
+                                    )
+                                }
+                                .buttonStyle(.plain)
+                                .id(equivalent.aperture)
                             }
-                            .buttonStyle(.plain)
                         }
                     }
                 }
+                .scrollIndicators(.hidden)
+                .scrollClipDisabled()
+                .onAppear {
+                    scrollToSelection(with: proxy, animated: false)
+                }
+                .onChange(of: selectedAperture) {
+                    scrollToSelection(with: proxy, animated: true)
+                }
             }
-            .scrollIndicators(.hidden)
-            .scrollClipDisabled()
+        }
+    }
+}
+
+private extension EquivalentsRow {
+    func scrollToSelection(with proxy: ScrollViewProxy, animated: Bool) {
+        guard let selectedAperture else { return }
+
+        if animated {
+            withAnimation { proxy.scrollTo(selectedAperture, anchor: .center) }
+        } else {
+            proxy.scrollTo(selectedAperture, anchor: .center)
         }
     }
 }
