@@ -23,14 +23,26 @@ nonisolated enum ExposureFormatter {
             : seconds(value, locale: locale) + " s"
     }
 
+    static func shutter(_ value: Double, locale: Locale = .current) -> String {
+        guard value > 0 else { return "" }
+
+        return value <= fractionThreshold
+            ? fraction(value, locale: locale)
+            : seconds(value, locale: locale) + " s"
+    }
+
     static func equivalent(aperture: Double, exposureTime: Double, locale: Locale = .current) -> String {
         guard exposureTime > 0 else { return "" }
 
-        let time = exposureTime <= fractionThreshold
-            ? fraction(exposureTime, locale: locale)
-            : seconds(exposureTime, locale: locale) + " s"
+        return self.aperture(aperture, locale: locale) + " · " + shutter(exposureTime, locale: locale)
+    }
 
-        return self.aperture(aperture, locale: locale) + " · " + time
+    static func isoValue(_ value: Double, locale: Locale = .current) -> String {
+        value.formatted(.number.precision(.fractionLength(0)).grouping(.never).locale(locale))
+    }
+
+    static func compensation(_ value: Double, locale: Locale = .current) -> String {
+        value.formatted(.number.precision(.fractionLength(1)).sign(strategy: .always(includingZero: false)).locale(locale)) + " EV"
     }
 
     static func iso(_ value: Double, locale: Locale = .current) -> String {

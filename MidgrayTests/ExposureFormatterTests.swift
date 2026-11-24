@@ -97,4 +97,43 @@ struct ExposureFormatterTests {
     func equivalentPairWithInvalidTimeIsEmpty() {
         #expect(ExposureFormatter.equivalent(aperture: 5.6, exposureTime: 0, locale: Self.english).isEmpty)
     }
+
+    nonisolated static let shutterValues: [(Double, String)] = [
+        (1.0 / 4000, "1/4000"), (1.0 / 125, "1/125"), (1.0 / 4, "1/4"),
+        (0.5, "0.5 s"), (1, "1 s"), (1.3, "1.3 s"), (30, "30 s")
+    ]
+
+    @Test(arguments: ExposureFormatterTests.shutterValues)
+    func formatsShutterWithoutUnitForFractions(value: Double, expected: String) {
+        #expect(ExposureFormatter.shutter(value, locale: Self.english) == expected)
+    }
+
+    @Test
+    func invalidShutterIsEmpty() {
+        #expect(ExposureFormatter.shutter(0, locale: Self.english).isEmpty)
+        #expect(ExposureFormatter.shutter(-1, locale: Self.english).isEmpty)
+    }
+
+    nonisolated static let isoNumbers: [(Double, String)] = [(50, "50"), (100, "100"), (1600, "1600"), (12800, "12800")]
+
+    @Test(arguments: ExposureFormatterTests.isoNumbers)
+    func formatsISOValueWithoutPrefix(value: Double, expected: String) {
+        #expect(ExposureFormatter.isoValue(value, locale: Self.english) == expected)
+        #expect(ExposureFormatter.isoValue(value, locale: Self.spanish) == expected)
+    }
+
+    nonisolated static let compensations: [(Double, String)] = [
+        (0, "0.0 EV"), (1.0 / 3, "+0.3 EV"), (2.0 / 3, "+0.7 EV"), (3, "+3.0 EV"),
+        (-1.0 / 3, "-0.3 EV"), (-2, "-2.0 EV")
+    ]
+
+    @Test(arguments: ExposureFormatterTests.compensations)
+    func formatsCompensationWithSign(value: Double, expected: String) {
+        #expect(ExposureFormatter.compensation(value, locale: Self.english) == expected)
+    }
+
+    @Test
+    func compensationUsesTheLocaleDecimalSeparator() {
+        #expect(ExposureFormatter.compensation(1.0 / 3, locale: Self.spanish) == "+0,3 EV")
+    }
 }
