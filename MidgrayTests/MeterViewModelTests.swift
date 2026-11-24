@@ -18,9 +18,15 @@ struct MeterViewModelTests {
 
     nonisolated static let invalidReading = CameraReading(aperture: 16, exposureTime: 1.0 / 125, iso: 100, exposureTargetOffset: .nan)
 
-    func makeViewModel(_ readings: [CameraReading], smoothing: Double = 0.5) throws -> MeterViewModel {
+    func makeViewModel(_ readings: [CameraReading],
+                       smoothing: Double = 0.5,
+                       priority: ExposurePriority = .aperture(5.6),
+                       baseISO: Double = 100) throws -> MeterViewModel {
         let smoother = try #require(EVSmoother(smoothing: smoothing))
-        return MeterViewModel(sensor: FakeLightSensor(scriptedReadings: readings), smoother: smoother)
+        return MeterViewModel(sensor: FakeLightSensor(scriptedReadings: readings),
+                              smoother: smoother,
+                              priority: priority,
+                              baseISO: baseISO)
     }
 
     func waitUntil(_ condition: () -> Bool) async -> Bool {
@@ -87,5 +93,81 @@ struct MeterViewModelTests {
         viewModel.start()
         let reached = await waitUntil { abs((viewModel.ev ?? .nan) - (Self.base + 2)) < 1e-9 }
         #expect(reached)
+    }
+
+    @Test
+    func withoutEVThereIsNoSuggestion() throws {
+        let viewModel = try makeViewModel([])
+        #expect(viewModel.suggestion == nil)
+        #expect(viewModel.equivalents.isEmpty)
+    }
+
+    @Test
+    func aperturePriorityGivesSunnySixteenTime() async throws {
+        let viewModel = try makeViewModel([Self.reading(offset: 0)], priority: .aperture(16))
+
+        viewModel.start()
+        let received = await waitUntil { viewModel.ev != nil }
+        #expect(received)
+
+        let suggestion = try #require(viewModel.suggestion)
+        #expect(suggestion.aperture == 16)
+        #expect(suggestion.iso == 100)
+        #expect(abs(suggestion.exposureTime - 1.0 / 125) < 1e-9)
+    }
+
+    @Test
+    func changingThePriorityUpdatesTheSuggestionWithoutNewReadings() async throws {
+        let viewModel = try makeViewModel([Self.reading(offset: 0)], priority: .aperture(16))
+
+        viewModel.start()
+        let received = await waitUntil { viewModel.ev != nil }
+        #expect(received)
+
+        viewModel.priority = .shutter(1.0 / 125)
+
+        let suggestion = try #require(viewModel.suggestion)
+        #expect(suggestion.exposureTime == 1.0 / 125)
+        #expect(suggestion.aperture == 16)
+    }
+
+    @Test
+    func changingTheBaseISOUpdatesTheSuggestion() async throws {
+        let viewModel = try makeViewModel([Self.reading(offset: 0)], priority: .aperture(16))
+
+        viewModel.start()
+        let received = await waitUntil { viewModel.ev != nil }
+        #expect(received)
+
+        viewModel.baseISO = 200
+
+        let suggestion = try #require(viewModel.suggestion)
+        #expect(suggestion.iso == 200)
+        #expect(suggestion.exposureTime < 1.0 / 125)
+    }
+
+    @Test
+    func equivalentsMatchTheMeteredLight() async throws {
+        let viewModel = try makeViewModel([Self.reading(offset: 0)])
+
+        viewModel.start()
+        let received = await waitUntil { viewModel.ev != nil }
+        #expect(received)
+
+        #expect(!viewModel.equivalents.isEmpty)
+        #expect(viewModel.equivalents.allSatisfy { $0.iso == 100 && abs($0.evError) <= 0.5 })
+    }
+
+    @Test
+    func stopRemovesTheSuggestion() async throws {
+        let viewModel = try makeViewModel([Self.reading(offset: 0)])
+
+        viewModel.start()
+        let received = await waitUntil { viewModel.suggestion != nil }
+        #expect(received)
+
+        viewModel.stop()
+        #expect(viewModel.suggestion == nil)
+        #expect(viewModel.equivalents.isEmpty)
     }
 }

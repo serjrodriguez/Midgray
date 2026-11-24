@@ -16,9 +16,27 @@ final class MeterViewModel {
     private var smoother: EVSmoother
     private var task: Task<Void, Never>?
     
-    init(sensor: any LightSensing, smoother: EVSmoother) {
+    var priority: ExposurePriority
+    var baseISO: Double
+    var suggestion: ExposureSuggestion? {
+        guard let ev else { return nil }
+
+        return ExposureSuggestion.suggestion(ev100: ev, baseISO: baseISO, priority: priority)
+    }
+    var equivalents: [ExposureSuggestion] {
+        guard let ev else { return [] }
+
+        return ExposureSuggestion.equivalents(ev100: ev, iso: baseISO)
+    }
+
+    init(sensor: any LightSensing,
+         smoother: EVSmoother,
+         priority: ExposurePriority = .aperture(5.6),
+         baseISO: Double = 100) {
         self.sensor = sensor
         self.smoother = smoother
+        self.baseISO = baseISO
+        self.priority = priority
     }
     
     func start() {
