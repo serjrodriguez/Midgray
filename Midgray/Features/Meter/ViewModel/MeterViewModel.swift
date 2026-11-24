@@ -8,6 +8,18 @@
 import Foundation
 import Observation
 
+nonisolated struct MeterReadout: Equatable {
+    let ev: Double
+    let compensatedEV: Double
+    let suggestion: ExposureSuggestion?
+    let equivalents: [ExposureSuggestion]
+}
+
+nonisolated enum MeterState: Equatable {
+    case idle
+    case measuring(MeterReadout)
+}
+
 @Observable
 final class MeterViewModel {
     private(set) var ev: Double?
@@ -18,15 +30,38 @@ final class MeterViewModel {
     
     var priority: ExposurePriority
     var baseISO: Double
-    var suggestion: ExposureSuggestion? {
-        guard let ev else { return nil }
+    private(set) var compensation: Double = 0
 
-        return ExposureSuggestion.suggestion(ev100: ev, baseISO: baseISO, priority: priority)
+    nonisolated static let compensationRange: ClosedRange<Double> = -3...3
+
+    private var compensatedEV: Double? {
+        ev.map { $0 - compensation }
     }
-    var equivalents: [ExposureSuggestion] {
-        guard let ev else { return [] }
 
-        return ExposureSuggestion.equivalents(ev100: ev, iso: baseISO)
+    private var suggestion: ExposureSuggestion? {
+        guard let compensatedEV else { return nil }
+        return ExposureSuggestion.suggestion(ev100: compensatedEV, baseISO: baseISO, priority: priority)
+    }
+
+    private var equivalents: [ExposureSuggestion] {
+        guard let compensatedEV else { return [] }
+        return ExposureSuggestion.equivalents(ev100: compensatedEV, iso: baseISO)
+    }
+
+    var state: MeterState  {
+        guard let ev = ev,
+              let compensatedEV = compensatedEV
+        else { return MeterState.idle }
+
+        return MeterState.measuring(
+            MeterReadout(
+                ev: ev,
+                compensatedEV: compensatedEV,
+                suggestion: suggestion,
+                equivalents: equivalents
+            )
+        )
+
     }
 
     init(sensor: any LightSensing,
@@ -39,6 +74,13 @@ final class MeterViewModel {
         self.priority = priority
     }
     
+    func setCompensation(_ value: Double) {
+        guard value.isFinite else { return }
+
+        let stepped = (value * 3).rounded() / 3
+        compensation = min(max(stepped, Self.compensationRange.lowerBound), Self.compensationRange.upperBound)
+    }
+
     func start() {
         stop()
 
