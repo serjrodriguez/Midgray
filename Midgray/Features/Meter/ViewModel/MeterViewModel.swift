@@ -12,7 +12,6 @@ import Observation
 final class MeterViewModel {
     nonisolated static let compensationRange: ClosedRange<Double> = -3...3
     nonisolated static let outOfRangeThreshold: Double = 1
-    nonisolated static let autoAperture: Double = 5.6
 
     var mode: ExposureMode
     var aperture: Double
@@ -20,6 +19,7 @@ final class MeterViewModel {
     var baseISO: Double
     
     private(set) var compensation: Double = 0
+    private(set) var autoAperture: Double
 
     private let sensor: any LightSensing
     private var smoother: EVSmoother
@@ -31,13 +31,15 @@ final class MeterViewModel {
          mode: ExposureMode = .auto,
          aperture: Double = 5.6,
          shutterSpeed: Double = 1.0 / 125,
-         baseISO: Double = 100) {
+         baseISO: Double = 100,
+         autoAperture: Double = 5.6) {
         self.sensor = sensor
         self.smoother = smoother
         self.mode = mode
         self.aperture = aperture
         self.shutterSpeed = shutterSpeed
         self.baseISO = baseISO
+        self.autoAperture = autoAperture
     }
 
     var state: MeterState {
@@ -82,13 +84,18 @@ final class MeterViewModel {
         smoother.reset()
         latest = nil
     }
+
+    func selectAutoAperture(_ value: Double) {
+        guard value.isFinite, value > 0 else { return }
+        autoAperture = value
+    }
 }
 
 private extension MeterViewModel {
     var priority: ExposurePriority {
         switch mode {
         case .auto:
-            .aperture(Self.autoAperture)
+            .aperture(autoAperture)
         case .aperture:
             .aperture(aperture)
         case .shutter:
