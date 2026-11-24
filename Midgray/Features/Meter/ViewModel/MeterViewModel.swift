@@ -29,9 +29,21 @@ final class MeterViewModel {
     private let sensor: any LightSensing
     private var smoother: EVSmoother
     private var task: Task<Void, Never>?
-    
-    var priority: ExposurePriority
+    private var priority: ExposurePriority {
+        switch mode {
+        case .auto, .aperture:
+            .aperture(aperture)
+        case .shutter:
+            .shutter(shutterSpeed)
+        case .iso:
+            .iso(aperture: aperture, shutter: shutterSpeed)
+        }
+    }
+
     var baseISO: Double
+    var mode: ExposureMode = .auto
+    var aperture: Double
+    var shutterSpeed: Double
     private(set) var compensation: Double = 0
 
     nonisolated static let compensationRange: ClosedRange<Double> = -3...3
@@ -72,12 +84,16 @@ final class MeterViewModel {
 
     init(sensor: any LightSensing,
          smoother: EVSmoother,
-         priority: ExposurePriority = .aperture(5.6),
+         mode: ExposureMode = .auto,
+         aperture: Double = 5.6,
+         shutterSpeed: Double = 1.0 / 125,
          baseISO: Double = 100) {
         self.sensor = sensor
         self.smoother = smoother
         self.baseISO = baseISO
-        self.priority = priority
+        self.mode = mode
+        self.aperture = aperture
+        self.shutterSpeed = shutterSpeed
     }
     
     func setCompensation(_ value: Double) {
