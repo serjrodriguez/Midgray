@@ -355,4 +355,18 @@ struct MeterViewModelTests {
         #expect(suggestion.aperture == 8)
         #expect(suggestion.exposureTime == 1.0 / 500)
     }
+
+    @Test
+    func autoModeUsesAFixedApertureRegardlessOfTheChosenOne() async throws {
+        let viewModel = try makeViewModel([Self.reading(offset: 0)], mode: .auto, aperture: 16)
+
+        viewModel.start()
+        let received = await waitUntil { currentReadout(viewModel) != nil }
+        #expect(received)
+
+        let suggestion = try #require(currentReadout(viewModel)?.suggestion)
+        #expect(suggestion.aperture == MeterViewModel.autoAperture)
+        #expect(suggestion.aperture == 5.6)
+        #expect(suggestion.exposureTime == 1.0 / 1000)
+    }
 }

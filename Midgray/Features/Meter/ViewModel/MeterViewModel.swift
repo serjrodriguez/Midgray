@@ -31,7 +31,9 @@ final class MeterViewModel {
     private var task: Task<Void, Never>?
     private var priority: ExposurePriority {
         switch mode {
-        case .auto, .aperture:
+        case .auto:
+            .aperture(Self.autoAperture)
+        case .aperture:
             .aperture(aperture)
         case .shutter:
             .shutter(shutterSpeed)
@@ -48,6 +50,7 @@ final class MeterViewModel {
 
     nonisolated static let compensationRange: ClosedRange<Double> = -3...3
     nonisolated static let outOfRangeThreshold: Double = 1
+    nonisolated static let autoAperture: Double = 5.6
 
     private var compensatedEV: Double? {
         ev.map { $0 - compensation }
