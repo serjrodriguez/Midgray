@@ -18,15 +18,24 @@ final class MeterViewModel {
     
     var priority: ExposurePriority
     var baseISO: Double
-    var suggestion: ExposureSuggestion? {
-        guard let ev else { return nil }
+    private(set) var compensation: Double = 0
 
-        return ExposureSuggestion.suggestion(ev100: ev, baseISO: baseISO, priority: priority)
+    nonisolated static let compensationRange: ClosedRange<Double> = -3...3
+
+    var compensatedEV: Double? {
+        ev.map { $0 - compensation }
     }
-    var equivalents: [ExposureSuggestion] {
-        guard let ev else { return [] }
 
-        return ExposureSuggestion.equivalents(ev100: ev, iso: baseISO)
+    var suggestion: ExposureSuggestion? {
+        guard let compensatedEV else { return nil }
+
+        return ExposureSuggestion.suggestion(ev100: compensatedEV, baseISO: baseISO, priority: priority)
+    }
+
+    var equivalents: [ExposureSuggestion] {
+        guard let compensatedEV else { return [] }
+
+        return ExposureSuggestion.equivalents(ev100: compensatedEV, iso: baseISO)
     }
 
     init(sensor: any LightSensing,
@@ -39,6 +48,13 @@ final class MeterViewModel {
         self.priority = priority
     }
     
+    func setCompensation(_ value: Double) {
+        guard value.isFinite else { return }
+
+        let stepped = (value * 3).rounded() / 3
+        compensation = min(max(stepped, Self.compensationRange.lowerBound), Self.compensationRange.upperBound)
+    }
+
     func start() {
         stop()
 

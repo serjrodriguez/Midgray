@@ -170,4 +170,66 @@ struct MeterViewModelTests {
         #expect(viewModel.suggestion == nil)
         #expect(viewModel.equivalents.isEmpty)
     }
+
+    @Test
+    func startsWithoutCompensation() throws {
+        let viewModel = try makeViewModel([])
+        #expect(viewModel.compensation == 0)
+    }
+
+    nonisolated static let steppedValues: [(Double, Double)] = [
+        (0.1, 0), (0.2, 1.0 / 3), (0.5, 2.0 / 3), (1, 1), (-0.4, -1.0 / 3), (-1.7, -5.0 / 3)
+    ]
+
+    @Test(arguments: MeterViewModelTests.steppedValues)
+    func compensationSnapsToThirdsOfAStop(value: Double, expected: Double) throws {
+        let viewModel = try makeViewModel([])
+        viewModel.setCompensation(value)
+        #expect(abs(viewModel.compensation - expected) < 1e-9)
+    }
+
+    nonisolated static let outOfRangeValues: [(Double, Double)] = [(5, 3), (3.4, 3), (-4, -3), (-100, -3)]
+
+    @Test(arguments: MeterViewModelTests.outOfRangeValues)
+    func compensationIsClampedToTheRange(value: Double, expected: Double) throws {
+        let viewModel = try makeViewModel([])
+        viewModel.setCompensation(value)
+        #expect(viewModel.compensation == expected)
+    }
+
+    @Test
+    func nonFiniteCompensationIsIgnored() throws {
+        let viewModel = try makeViewModel([])
+        viewModel.setCompensation(1)
+        viewModel.setCompensation(.nan)
+        viewModel.setCompensation(.infinity)
+        #expect(viewModel.compensation == 1)
+    }
+
+    @Test
+    func positiveCompensationLengthensTheExposure() async throws {
+        let viewModel = try makeViewModel([Self.reading(offset: 0)], priority: .aperture(16))
+
+        viewModel.start()
+        let received = await waitUntil { viewModel.ev != nil }
+        #expect(received)
+
+        viewModel.setCompensation(1)
+
+        let suggestion = try #require(viewModel.suggestion)
+        #expect(abs(suggestion.exposureTime - 1.0 / 60) < 1e-9)
+        #expect(abs((viewModel.compensatedEV ?? .nan) - (Self.base - 1)) < 1e-9)
+    }
+
+    @Test
+    func compensationDoesNotChangeTheMeasuredEV() async throws {
+        let viewModel = try makeViewModel([Self.reading(offset: 0)])
+
+        viewModel.start()
+        let received = await waitUntil { viewModel.ev != nil }
+        #expect(received)
+
+        viewModel.setCompensation(-2)
+        #expect(abs((viewModel.ev ?? .nan) - Self.base) < 1e-9)
+    }
 }
