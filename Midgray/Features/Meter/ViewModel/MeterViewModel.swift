@@ -8,6 +8,18 @@
 import Foundation
 import Observation
 
+nonisolated struct MeterReadout: Equatable {
+    let ev: Double
+    let compensatedEV: Double
+    let suggestion: ExposureSuggestion?
+    let equivalents: [ExposureSuggestion]
+}
+
+nonisolated enum MeterState: Equatable {
+    case idle
+    case measuring(MeterReadout)
+}
+
 @Observable
 final class MeterViewModel {
     private(set) var ev: Double?
@@ -22,20 +34,34 @@ final class MeterViewModel {
 
     nonisolated static let compensationRange: ClosedRange<Double> = -3...3
 
-    var compensatedEV: Double? {
+    private var compensatedEV: Double? {
         ev.map { $0 - compensation }
     }
 
-    var suggestion: ExposureSuggestion? {
+    private var suggestion: ExposureSuggestion? {
         guard let compensatedEV else { return nil }
-
         return ExposureSuggestion.suggestion(ev100: compensatedEV, baseISO: baseISO, priority: priority)
     }
 
-    var equivalents: [ExposureSuggestion] {
+    private var equivalents: [ExposureSuggestion] {
         guard let compensatedEV else { return [] }
-
         return ExposureSuggestion.equivalents(ev100: compensatedEV, iso: baseISO)
+    }
+
+    var state: MeterState  {
+        guard let ev = ev,
+              let compensatedEV = compensatedEV
+        else { return MeterState.idle }
+
+        return MeterState.measuring(
+            MeterReadout(
+                ev: ev,
+                compensatedEV: compensatedEV,
+                suggestion: suggestion,
+                equivalents: equivalents
+            )
+        )
+
     }
 
     init(sensor: any LightSensing,

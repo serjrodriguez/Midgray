@@ -29,6 +29,11 @@ struct MeterViewModelTests {
                               baseISO: baseISO)
     }
 
+    func currentReadout(_ viewModel: MeterViewModel) -> MeterReadout? {
+        guard case .measuring(let readout) = viewModel.state else { return nil }
+        return readout
+    }
+
     func waitUntil(_ condition: () -> Bool) async -> Bool {
         for _ in 0..<1000 {
             if condition() { return true }
@@ -38,9 +43,9 @@ struct MeterViewModelTests {
     }
 
     @Test
-    func startsWithoutEV() throws {
+    func startsIdle() throws {
         let viewModel = try makeViewModel([])
-        #expect(viewModel.ev == nil)
+        #expect(viewModel.state == .idle)
     }
 
     @Test
@@ -50,7 +55,7 @@ struct MeterViewModelTests {
 
         viewModel.start()
 
-        let reached = await waitUntil { abs((viewModel.ev ?? .nan) - expected) < 1e-9 }
+        let reached = await waitUntil { abs((currentReadout(viewModel)?.ev ?? .nan) - expected) < 1e-9 }
         #expect(reached)
     }
 
@@ -65,20 +70,20 @@ struct MeterViewModelTests {
 
         viewModel.start()
 
-        let reached = await waitUntil { abs((viewModel.ev ?? .nan) - expected) < 1e-9 }
+        let reached = await waitUntil { abs((currentReadout(viewModel)?.ev ?? .nan) - expected) < 1e-9 }
         #expect(reached)
     }
 
     @Test
-    func stopClearsTheEV() async throws {
+    func stopReturnsToIdle() async throws {
         let viewModel = try makeViewModel([Self.reading(offset: 0)])
 
         viewModel.start()
-        let received = await waitUntil { viewModel.ev != nil }
+        let received = await waitUntil { currentReadout(viewModel) != nil }
         #expect(received)
 
         viewModel.stop()
-        #expect(viewModel.ev == nil)
+        #expect(viewModel.state == .idle)
     }
 
     @Test
@@ -86,20 +91,13 @@ struct MeterViewModelTests {
         let viewModel = try makeViewModel([Self.reading(offset: 2)])
 
         viewModel.start()
-        let first = await waitUntil { viewModel.ev != nil }
+        let first = await waitUntil { currentReadout(viewModel) != nil }
         #expect(first)
         viewModel.stop()
 
         viewModel.start()
-        let reached = await waitUntil { abs((viewModel.ev ?? .nan) - (Self.base + 2)) < 1e-9 }
+        let reached = await waitUntil { abs((currentReadout(viewModel)?.ev ?? .nan) - (Self.base + 2)) < 1e-9 }
         #expect(reached)
-    }
-
-    @Test
-    func withoutEVThereIsNoSuggestion() throws {
-        let viewModel = try makeViewModel([])
-        #expect(viewModel.suggestion == nil)
-        #expect(viewModel.equivalents.isEmpty)
     }
 
     @Test
@@ -107,10 +105,10 @@ struct MeterViewModelTests {
         let viewModel = try makeViewModel([Self.reading(offset: 0)], priority: .aperture(16))
 
         viewModel.start()
-        let received = await waitUntil { viewModel.ev != nil }
+        let received = await waitUntil { currentReadout(viewModel) != nil }
         #expect(received)
 
-        let suggestion = try #require(viewModel.suggestion)
+        let suggestion = try #require(currentReadout(viewModel)?.suggestion)
         #expect(suggestion.aperture == 16)
         #expect(suggestion.iso == 100)
         #expect(abs(suggestion.exposureTime - 1.0 / 125) < 1e-9)
@@ -121,12 +119,12 @@ struct MeterViewModelTests {
         let viewModel = try makeViewModel([Self.reading(offset: 0)], priority: .aperture(16))
 
         viewModel.start()
-        let received = await waitUntil { viewModel.ev != nil }
+        let received = await waitUntil { currentReadout(viewModel) != nil }
         #expect(received)
 
         viewModel.priority = .shutter(1.0 / 125)
 
-        let suggestion = try #require(viewModel.suggestion)
+        let suggestion = try #require(currentReadout(viewModel)?.suggestion)
         #expect(suggestion.exposureTime == 1.0 / 125)
         #expect(suggestion.aperture == 16)
     }
@@ -136,12 +134,12 @@ struct MeterViewModelTests {
         let viewModel = try makeViewModel([Self.reading(offset: 0)], priority: .aperture(16))
 
         viewModel.start()
-        let received = await waitUntil { viewModel.ev != nil }
+        let received = await waitUntil { currentReadout(viewModel) != nil }
         #expect(received)
 
         viewModel.baseISO = 200
 
-        let suggestion = try #require(viewModel.suggestion)
+        let suggestion = try #require(currentReadout(viewModel)?.suggestion)
         #expect(suggestion.iso == 200)
         #expect(suggestion.exposureTime < 1.0 / 125)
     }
@@ -151,24 +149,12 @@ struct MeterViewModelTests {
         let viewModel = try makeViewModel([Self.reading(offset: 0)])
 
         viewModel.start()
-        let received = await waitUntil { viewModel.ev != nil }
+        let received = await waitUntil { currentReadout(viewModel) != nil }
         #expect(received)
 
-        #expect(!viewModel.equivalents.isEmpty)
-        #expect(viewModel.equivalents.allSatisfy { $0.iso == 100 && abs($0.evError) <= 0.5 })
-    }
-
-    @Test
-    func stopRemovesTheSuggestion() async throws {
-        let viewModel = try makeViewModel([Self.reading(offset: 0)])
-
-        viewModel.start()
-        let received = await waitUntil { viewModel.suggestion != nil }
-        #expect(received)
-
-        viewModel.stop()
-        #expect(viewModel.suggestion == nil)
-        #expect(viewModel.equivalents.isEmpty)
+        let equivalents = try #require(currentReadout(viewModel)?.equivalents)
+        #expect(!equivalents.isEmpty)
+        #expect(equivalents.allSatisfy { $0.iso == 100 && abs($0.evError) <= 0.5 })
     }
 
     @Test
@@ -211,14 +197,14 @@ struct MeterViewModelTests {
         let viewModel = try makeViewModel([Self.reading(offset: 0)], priority: .aperture(16))
 
         viewModel.start()
-        let received = await waitUntil { viewModel.ev != nil }
+        let received = await waitUntil { currentReadout(viewModel) != nil }
         #expect(received)
 
         viewModel.setCompensation(1)
 
-        let suggestion = try #require(viewModel.suggestion)
+        let suggestion = try #require(currentReadout(viewModel)?.suggestion)
         #expect(abs(suggestion.exposureTime - 1.0 / 60) < 1e-9)
-        #expect(abs((viewModel.compensatedEV ?? .nan) - (Self.base - 1)) < 1e-9)
+        #expect(abs((currentReadout(viewModel)?.compensatedEV ?? .nan) - (Self.base - 1)) < 1e-9)
     }
 
     @Test
@@ -226,10 +212,25 @@ struct MeterViewModelTests {
         let viewModel = try makeViewModel([Self.reading(offset: 0)])
 
         viewModel.start()
-        let received = await waitUntil { viewModel.ev != nil }
+        let received = await waitUntil { currentReadout(viewModel) != nil }
         #expect(received)
 
         viewModel.setCompensation(-2)
-        #expect(abs((viewModel.ev ?? .nan) - Self.base) < 1e-9)
+        #expect(abs((currentReadout(viewModel)?.ev ?? .nan) - Self.base) < 1e-9)
+    }
+
+    @Test
+    func measuringStateCarriesAConsistentReadout() async throws {
+        let viewModel = try makeViewModel([Self.reading(offset: 0)], priority: .aperture(16))
+
+        viewModel.start()
+        let received = await waitUntil { currentReadout(viewModel) != nil }
+        #expect(received)
+
+        let readout = try #require(currentReadout(viewModel))
+        #expect(abs(readout.ev - Self.base) < 1e-9)
+        #expect(readout.compensatedEV == readout.ev)
+        #expect(readout.suggestion != nil)
+        #expect(!readout.equivalents.isEmpty)
     }
 }
