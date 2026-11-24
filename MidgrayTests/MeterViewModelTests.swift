@@ -20,12 +20,16 @@ struct MeterViewModelTests {
 
     func makeViewModel(_ readings: [CameraReading],
                        smoothing: Double = 0.5,
-                       priority: ExposurePriority = .aperture(5.6),
+                       mode: ExposureMode = .auto,
+                       aperture: Double = 5.6,
+                       shutterSpeed: Double = 1.0 / 125,
                        baseISO: Double = 100) throws -> MeterViewModel {
         let smoother = try #require(EVSmoother(smoothing: smoothing))
         return MeterViewModel(sensor: FakeLightSensor(scriptedReadings: readings),
                               smoother: smoother,
-                              priority: priority,
+                              mode: mode,
+                              aperture: aperture,
+                              shutterSpeed: shutterSpeed,
                               baseISO: baseISO)
     }
 
@@ -104,7 +108,7 @@ struct MeterViewModelTests {
 
     @Test
     func aperturePriorityGivesSunnySixteenTime() async throws {
-        let viewModel = try makeViewModel([Self.reading(offset: 0)], priority: .aperture(16))
+        let viewModel = try makeViewModel([Self.reading(offset: 0)], mode: .aperture, aperture: 16)
 
         viewModel.start()
         let received = await waitUntil { currentReadout(viewModel) != nil }
@@ -118,13 +122,14 @@ struct MeterViewModelTests {
 
     @Test
     func changingThePriorityUpdatesTheSuggestionWithoutNewReadings() async throws {
-        let viewModel = try makeViewModel([Self.reading(offset: 0)], priority: .aperture(16))
+        let viewModel = try makeViewModel([Self.reading(offset: 0)], mode: .aperture, aperture: 16)
 
         viewModel.start()
         let received = await waitUntil { currentReadout(viewModel) != nil }
         #expect(received)
 
-        viewModel.priority = .shutter(1.0 / 125)
+        viewModel.mode = .shutter
+        viewModel.shutterSpeed = 1.0 / 125
 
         let suggestion = try #require(currentReadout(viewModel)?.suggestion)
         #expect(suggestion.exposureTime == 1.0 / 125)
@@ -133,7 +138,7 @@ struct MeterViewModelTests {
 
     @Test
     func changingTheBaseISOUpdatesTheSuggestion() async throws {
-        let viewModel = try makeViewModel([Self.reading(offset: 0)], priority: .aperture(16))
+        let viewModel = try makeViewModel([Self.reading(offset: 0)], mode: .aperture, aperture: 16)
 
         viewModel.start()
         let received = await waitUntil { currentReadout(viewModel) != nil }
@@ -196,7 +201,7 @@ struct MeterViewModelTests {
 
     @Test
     func positiveCompensationLengthensTheExposure() async throws {
-        let viewModel = try makeViewModel([Self.reading(offset: 0)], priority: .aperture(16))
+        let viewModel = try makeViewModel([Self.reading(offset: 0)], mode: .aperture, aperture: 16)
 
         viewModel.start()
         let received = await waitUntil { currentReadout(viewModel) != nil }
@@ -223,7 +228,7 @@ struct MeterViewModelTests {
 
     @Test
     func measuringStateCarriesAConsistentReadout() async throws {
-        let viewModel = try makeViewModel([Self.reading(offset: 0)], priority: .aperture(16))
+        let viewModel = try makeViewModel([Self.reading(offset: 0)], mode: .aperture, aperture: 16)
 
         viewModel.start()
         let received = await waitUntil { currentReadout(viewModel) != nil }
@@ -291,5 +296,77 @@ struct MeterViewModelTests {
 
         viewModel.stop()
         #expect(viewModel.state == .idle)
+    }
+
+    @Test
+    func shutterModeComputesTheApertureFromTheChosenShutter() async throws {
+        let viewModel = try makeViewModel([Self.reading(offset: 0)], mode: .shutter, shutterSpeed: 1.0 / 125)
+
+        viewModel.start()
+        let received = await waitUntil { currentReadout(viewModel) != nil }
+        #expect(received)
+
+        let suggestion = try #require(currentReadout(viewModel)?.suggestion)
+        #expect(suggestion.aperture == 16)
+        #expect(suggestion.exposureTime == 1.0 / 125)
+    }
+
+    @Test
+    func isoModeComputesTheISOFromApertureAndShutter() async throws {
+        let viewModel = try makeViewModel([Self.reading(offset: 0)], mode: .iso, aperture: 8, shutterSpeed: 1.0 / 1000)
+
+        viewModel.start()
+        let received = await waitUntil { currentReadout(viewModel) != nil }
+        #expect(received)
+
+        let suggestion = try #require(currentReadout(viewModel)?.suggestion)
+        #expect(suggestion.aperture == 8)
+        #expect(suggestion.exposureTime == 1.0 / 1000)
+        #expect(suggestion.iso == 200)
+    }
+
+    @Test
+    func changingTheModeUpdatesTheSuggestionWithoutNewReadings() async throws {
+        let viewModel = try makeViewModel([Self.reading(offset: 0)], mode: .aperture, aperture: 16, shutterSpeed: 1.0 / 1000)
+
+        viewModel.start()
+        let received = await waitUntil { currentReadout(viewModel) != nil }
+        #expect(received)
+        #expect(currentReadout(viewModel)?.suggestion?.exposureTime == 1.0 / 125)
+
+        viewModel.mode = .shutter
+
+        let suggestion = try #require(currentReadout(viewModel)?.suggestion)
+        #expect(suggestion.exposureTime == 1.0 / 1000)
+        #expect(suggestion.aperture == 5.6)
+    }
+
+    @Test
+    func changingTheChosenApertureUpdatesTheSuggestion() async throws {
+        let viewModel = try makeViewModel([Self.reading(offset: 0)], mode: .aperture, aperture: 16)
+
+        viewModel.start()
+        let received = await waitUntil { currentReadout(viewModel) != nil }
+        #expect(received)
+
+        viewModel.aperture = 8
+
+        let suggestion = try #require(currentReadout(viewModel)?.suggestion)
+        #expect(suggestion.aperture == 8)
+        #expect(suggestion.exposureTime == 1.0 / 500)
+    }
+
+    @Test
+    func autoModeUsesAFixedApertureRegardlessOfTheChosenOne() async throws {
+        let viewModel = try makeViewModel([Self.reading(offset: 0)], mode: .auto, aperture: 16)
+
+        viewModel.start()
+        let received = await waitUntil { currentReadout(viewModel) != nil }
+        #expect(received)
+
+        let suggestion = try #require(currentReadout(viewModel)?.suggestion)
+        #expect(suggestion.aperture == MeterViewModel.autoAperture)
+        #expect(suggestion.aperture == 5.6)
+        #expect(suggestion.exposureTime == 1.0 / 1000)
     }
 }

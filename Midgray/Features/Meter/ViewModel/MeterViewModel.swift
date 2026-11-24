@@ -8,78 +8,52 @@
 import Foundation
 import Observation
 
-nonisolated struct MeterReadout: Equatable {
-    let ev: Double
-    let compensatedEV: Double
-    let suggestion: ExposureSuggestion?
-    let equivalents: [ExposureSuggestion]
-}
-
-nonisolated enum MeterState: Equatable {
-    case idle
-    case measuring(MeterReadout)
-    case outOfRange(MeterReadout)
-}
-
 @Observable
 final class MeterViewModel {
-    private var ev: Double?
-    private var exposureOffset: Double?
+    nonisolated static let compensationRange: ClosedRange<Double> = -3...3
+    nonisolated static let outOfRangeThreshold: Double = 1
+    nonisolated static let autoAperture: Double = 5.6
+
+    var mode: ExposureMode
+    var aperture: Double
+    var shutterSpeed: Double
+    var baseISO: Double
     
+    private(set) var compensation: Double = 0
+
     private let sensor: any LightSensing
     private var smoother: EVSmoother
     private var task: Task<Void, Never>?
-    
-    var priority: ExposurePriority
-    var baseISO: Double
-    private(set) var compensation: Double = 0
-
-    nonisolated static let compensationRange: ClosedRange<Double> = -3...3
-    nonisolated static let outOfRangeThreshold: Double = 1
-
-    private var compensatedEV: Double? {
-        ev.map { $0 - compensation }
-    }
-
-    private var suggestion: ExposureSuggestion? {
-        guard let compensatedEV else { return nil }
-        return ExposureSuggestion.suggestion(ev100: compensatedEV, baseISO: baseISO, priority: priority)
-    }
-
-    private var equivalents: [ExposureSuggestion] {
-        guard let compensatedEV else { return [] }
-        return ExposureSuggestion.equivalents(ev100: compensatedEV, iso: baseISO)
-    }
-
-    var state: MeterState  {
-        guard let ev = ev,
-              let compensatedEV = compensatedEV
-        else { return MeterState.idle }
-
-        let readout = MeterReadout(
-            ev: ev,
-            compensatedEV: compensatedEV,
-            suggestion: suggestion,
-            equivalents: equivalents
-        )
-
-        if let exposureOffset, abs(exposureOffset) > Self.outOfRangeThreshold {
-            return MeterState.outOfRange(readout)
-        }
-
-        return MeterState.measuring(readout)
-    }
+    private var latest: (ev: Double, offset: Double)?
 
     init(sensor: any LightSensing,
          smoother: EVSmoother,
-         priority: ExposurePriority = .aperture(5.6),
+         mode: ExposureMode = .auto,
+         aperture: Double = 5.6,
+         shutterSpeed: Double = 1.0 / 125,
          baseISO: Double = 100) {
         self.sensor = sensor
         self.smoother = smoother
+        self.mode = mode
+        self.aperture = aperture
+        self.shutterSpeed = shutterSpeed
         self.baseISO = baseISO
-        self.priority = priority
     }
-    
+
+    var state: MeterState {
+        guard let latest else { return .idle }
+
+        let compensatedEV = latest.ev - compensation
+        let readout = MeterReadout(
+            ev: latest.ev,
+            compensatedEV: compensatedEV,
+            suggestion: ExposureSuggestion.suggestion(ev100: compensatedEV, baseISO: baseISO, priority: priority),
+            equivalents: ExposureSuggestion.equivalents(ev100: compensatedEV, iso: baseISO)
+        )
+
+        return abs(latest.offset) > Self.outOfRangeThreshold ? .outOfRange(readout) : .measuring(readout)
+    }
+
     func setCompensation(_ value: Double) {
         guard value.isFinite else { return }
 
@@ -95,10 +69,9 @@ final class MeterViewModel {
         task = Task { [weak self] in
             for await reading in readings {
                 guard let self else { return }
-                guard let value = reading.ev100 else { continue }
+                guard let value = reading.ev100, let smoothed = smoother.add(value) else { continue }
 
-                ev = smoother.add(value)
-                exposureOffset = reading.exposureTargetOffset
+                latest = (smoothed, reading.exposureTargetOffset)
             }
         }
     }
@@ -107,7 +80,21 @@ final class MeterViewModel {
         task?.cancel()
         task = nil
         smoother.reset()
-        ev = nil
-        exposureOffset = nil
+        latest = nil
+    }
+}
+
+private extension MeterViewModel {
+    var priority: ExposurePriority {
+        switch mode {
+        case .auto:
+            .aperture(Self.autoAperture)
+        case .aperture:
+            .aperture(aperture)
+        case .shutter:
+            .shutter(shutterSpeed)
+        case .iso:
+            .iso(aperture: aperture, shutter: shutterSpeed)
+        }
     }
 }
