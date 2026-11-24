@@ -112,4 +112,73 @@ struct ExposureSuggestionTests {
     func equivalentsAreEmptyForInvalidISO() {
         #expect(ExposureSuggestion.equivalents(ev100: 10, iso: 0).isEmpty)
     }
+
+    @Test
+    func isoPriorityGivesSunnySixteenISO() throws {
+        let result = try #require(
+            ExposureSuggestion.suggestion(ev100: Self.sunnySixteenEV, baseISO: 800, priority: .iso(aperture: 16, shutter: 1.0 / 125))
+        )
+        #expect(result.aperture == 16)
+        #expect(result.exposureTime == 1.0 / 125)
+        #expect(result.iso == 100)
+        #expect(abs(result.evError) < 0.001)
+    }
+
+    @Test
+    func isoPriorityIgnoresTheBaseISO() throws {
+        let low = try #require(
+            ExposureSuggestion.suggestion(ev100: Self.sunnySixteenEV, baseISO: 50, priority: .iso(aperture: 8, shutter: 1.0 / 1000))
+        )
+        let invalid = try #require(
+            ExposureSuggestion.suggestion(ev100: Self.sunnySixteenEV, baseISO: -1, priority: .iso(aperture: 8, shutter: 1.0 / 1000))
+        )
+        #expect(low == invalid)
+        #expect(low.iso == 200)
+    }
+
+    @Test
+    func isoPriorityRoundsAperturesAndTimesToTheScale() throws {
+        let result = try #require(
+            ExposureSuggestion.suggestion(ev100: Self.sunnySixteenEV, baseISO: 100, priority: .iso(aperture: 16.2, shutter: 0.0081))
+        )
+        #expect(result.aperture == 16)
+        #expect(result.exposureTime == 1.0 / 125)
+    }
+
+    nonisolated static let isoTriples: [(Double, Double, Double)] = [
+        (1.4, 1.0 / 500, 50), (2.8, 1.0 / 125, 200), (5.6, 1.0 / 60, 400),
+        (8, 1.0 / 250, 1600), (11, 1.0 / 30, 125), (16, 1.0 / 15, 3200)
+    ]
+
+    @Test(arguments: ExposureSuggestionTests.isoTriples)
+    func isoPriorityRecoversTheISOUsedToComputeTheEV(aperture: Double, time: Double, iso: Double) throws {
+        let ev = try #require(ExposureMath.ev100(aperture: aperture, exposureTime: time, iso: iso))
+        let result = try #require(
+            ExposureSuggestion.suggestion(ev100: ev, baseISO: 100, priority: .iso(aperture: aperture, shutter: time))
+        )
+        #expect(result.iso == iso)
+        #expect(abs(result.evError) < 0.001)
+    }
+
+    @Test
+    func isoPriorityClampsToTheScaleAndReportsTheError() throws {
+        let tooBright = try #require(
+            ExposureSuggestion.suggestion(ev100: Self.sunnySixteenEV, baseISO: 100, priority: .iso(aperture: 1, shutter: 1.0 / 30))
+        )
+        #expect(tooBright.iso == 50)
+        #expect(tooBright.evError > 1)
+
+        let tooDark = try #require(
+            ExposureSuggestion.suggestion(ev100: 2, baseISO: 100, priority: .iso(aperture: 32, shutter: 1.0 / 4000))
+        )
+        #expect(tooDark.iso == 12800)
+        #expect(tooDark.evError < -1)
+    }
+
+    @Test
+    func isoPriorityRejectsInvalidInputs() {
+        #expect(ExposureSuggestion.suggestion(ev100: .nan, baseISO: 100, priority: .iso(aperture: 8, shutter: 0.01)) == nil)
+        #expect(ExposureSuggestion.suggestion(ev100: 10, baseISO: 100, priority: .iso(aperture: 0, shutter: 0.01)) == nil)
+        #expect(ExposureSuggestion.suggestion(ev100: 10, baseISO: 100, priority: .iso(aperture: 8, shutter: -1)) == nil)
+    }
 }

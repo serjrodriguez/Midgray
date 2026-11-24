@@ -10,6 +10,7 @@ import Foundation
 nonisolated enum ExposurePriority: Equatable {
     case aperture(Double)
     case shutter(Double)
+    case iso(aperture: Double, shutter: Double)
 }
 
 nonisolated struct ExposureSuggestion: Equatable {
@@ -19,11 +20,10 @@ nonisolated struct ExposureSuggestion: Equatable {
     let evError: Double
 
     static func suggestion(ev100: Double, baseISO: Double, priority: ExposurePriority) -> ExposureSuggestion? {
-        guard let roundedISO = ExposureScale.nearest(to: baseISO, in: ExposureScale.isoValues) else { return nil }
-
         switch priority {
         case .aperture(let aperture):
-            guard let roundedAperture = ExposureScale.nearest(to: aperture, in: ExposureScale.apertures),
+            guard let roundedISO = ExposureScale.nearest(to: baseISO, in: ExposureScale.isoValues),
+                  let roundedAperture = ExposureScale.nearest(to: aperture, in: ExposureScale.apertures),
                   let exposureTime = ExposureMath.exposureTime(ev100: ev100, aperture: roundedAperture, iso: roundedISO),
                   let roundedTime = ExposureScale.nearest(to: exposureTime, in: ExposureScale.shutterSpeeds)
             else { return nil }
@@ -31,9 +31,19 @@ nonisolated struct ExposureSuggestion: Equatable {
             return make(ev100: ev100, aperture: roundedAperture, exposureTime: roundedTime, iso: roundedISO)
 
         case .shutter(let shutterSpeed):
-            guard let roundedTime = ExposureScale.nearest(to: shutterSpeed, in: ExposureScale.shutterSpeeds),
+            guard let roundedISO = ExposureScale.nearest(to: baseISO, in: ExposureScale.isoValues),
+                  let roundedTime = ExposureScale.nearest(to: shutterSpeed, in: ExposureScale.shutterSpeeds),
                   let aperture = ExposureMath.aperture(ev100: ev100, exposureTime: roundedTime, iso: roundedISO),
                   let roundedAperture = ExposureScale.nearest(to: aperture, in: ExposureScale.apertures)
+            else { return nil }
+
+            return make(ev100: ev100, aperture: roundedAperture, exposureTime: roundedTime, iso: roundedISO)
+
+        case .iso(let aperture, let shutterSpeed):
+            guard let roundedAperture = ExposureScale.nearest(to: aperture, in: ExposureScale.apertures),
+                  let roundedTime = ExposureScale.nearest(to: shutterSpeed, in: ExposureScale.shutterSpeeds),
+                  let iso = ExposureMath.iso(ev100: ev100, aperture: roundedAperture, exposureTime: roundedTime),
+                  let roundedISO = ExposureScale.nearest(to: iso, in: ExposureScale.isoValues)
             else { return nil }
 
             return make(ev100: ev100, aperture: roundedAperture, exposureTime: roundedTime, iso: roundedISO)
