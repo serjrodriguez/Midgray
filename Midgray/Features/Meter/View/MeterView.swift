@@ -15,28 +15,60 @@ struct MeterView: View {
     }
 
     var body: some View {
-        VStack {
-            switch viewModel.state {
-                case .idle: Text("Measuring...")
-                case .measuring(let readout):
-                    VStack {
-                        Text(readout.ev.description)
-                        Text(readout.compensatedEV.description)
-                    }
-                case .outOfRange(let readout):
-                    Text("Out of range")
+        ZStack {
+            Color.black.ignoresSafeArea()
+
+            content
+        }
+        .preferredColorScheme(.dark)
+        .task { viewModel.start() }
+        .onDisappear { viewModel.stop() }
+    }
+
+    @ViewBuilder
+    private var content: some View {
+        switch viewModel.state {
+        case .idle:
+            ProgressView {
+                Text("Measuring...")
             }
+        case .measuring(let readout):
+            panel(readout, isOutOfRange: false)
+        case .outOfRange(let readout):
+            panel(readout, isOutOfRange: true)
         }
-        .task {
-            viewModel.start()
+    }
+
+    private func panel(_ readout: MeterReadout, isOutOfRange: Bool) -> some View {
+        VStack(spacing: Spacing.s12) {
+            Spacer()
+
+            if isOutOfRange {
+                OutOfRangeBadge()
+            }
+
+            MeterPanel(viewModel: viewModel, readout: readout)
         }
-        .onDisappear() {
-            viewModel.stop()
-        }
+        .padding(.horizontal, Spacing.s12)
+        .padding(.bottom, Spacing.s8)
     }
 }
 
-#Preview {
-    let smoother = EVSmoother()!
-    MeterView(viewModel: MeterViewModel(sensor: SimulatedLightSensor(), smoother: smoother))
+private struct OutOfRangeBadge: View {
+    var body: some View {
+        Label("Out of range", systemImage: "exclamationmark.triangle.fill")
+            .font(.footnote.weight(.semibold))
+            .foregroundStyle(.primary)
+            .padding(.horizontal, Spacing.s16)
+            .frame(minHeight: Spacing.s32)
+            .glassEffect(.regular.tint(.orange), in: .capsule)
+    }
+}
+
+#Preview("Midiendo") {
+    MeterView(viewModel: MeterViewModel(sensor: SimulatedLightSensor(), smoother: EVSmoother()!))
+}
+
+#Preview("Fuera de rango") {
+    MeterView(viewModel: MeterViewModel(sensor: SimulatedLightSensor(offsets: [2]), smoother: EVSmoother()!))
 }
