@@ -23,14 +23,16 @@ struct MeterViewModelTests {
                        mode: ExposureMode = .auto,
                        aperture: Double = 5.6,
                        shutterSpeed: Double = 1.0 / 125,
-                       baseISO: Double = 100) throws -> MeterViewModel {
+                       baseISO: Double = 100,
+                       autoAperture: Double = 5.6) throws -> MeterViewModel {
         let smoother = try #require(EVSmoother(smoothing: smoothing))
         return MeterViewModel(sensor: FakeLightSensor(scriptedReadings: readings),
                               smoother: smoother,
                               mode: mode,
                               aperture: aperture,
                               shutterSpeed: shutterSpeed,
-                              baseISO: baseISO)
+                              baseISO: baseISO,
+                              autoAperture: autoAperture)
     }
 
     func currentReadout(_ viewModel: MeterViewModel) -> MeterReadout? {
@@ -365,8 +367,68 @@ struct MeterViewModelTests {
         #expect(received)
 
         let suggestion = try #require(currentReadout(viewModel)?.suggestion)
-        #expect(suggestion.aperture == MeterViewModel.autoAperture)
+        #expect(suggestion.aperture == viewModel.autoAperture)
         #expect(suggestion.aperture == 5.6)
         #expect(suggestion.exposureTime == 1.0 / 1000)
+    }
+
+    @Test
+    func autoApertureStartsAtTheDefault() throws {
+        let viewModel = try makeViewModel([])
+        #expect(viewModel.autoAperture == 5.6)
+    }
+
+    @Test
+    func autoApertureCanBeFixedAtCreation() throws {
+        let viewModel = try makeViewModel([], autoAperture: 8)
+        #expect(viewModel.autoAperture == 8)
+    }
+
+    @Test
+    func selectingAnAutoApertureUpdatesTheAutoSuggestion() async throws {
+        let viewModel = try makeViewModel([Self.reading(offset: 0)], mode: .auto)
+
+        viewModel.start()
+        let received = await waitUntil { currentReadout(viewModel) != nil }
+        #expect(received)
+        #expect(currentReadout(viewModel)?.suggestion?.aperture == 5.6)
+
+        viewModel.selectAutoAperture(11)
+
+        let suggestion = try #require(currentReadout(viewModel)?.suggestion)
+        #expect(viewModel.autoAperture == 11)
+        #expect(suggestion.aperture == 11)
+        #expect(suggestion.exposureTime == 1.0 / 250)
+    }
+
+    nonisolated static let invalidApertures: [Double] = [0, -2.8, .nan, .infinity, -.infinity]
+
+    @Test(arguments: MeterViewModelTests.invalidApertures)
+    func invalidAutoAperturesAreIgnored(value: Double) throws {
+        let viewModel = try makeViewModel([], autoAperture: 8)
+        viewModel.selectAutoAperture(value)
+        #expect(viewModel.autoAperture == 8)
+    }
+
+    @Test
+    func selectingAnAutoApertureDoesNotAffectTheManualAperture() async throws {
+        let viewModel = try makeViewModel([Self.reading(offset: 0)], mode: .aperture, aperture: 16)
+
+        viewModel.selectAutoAperture(2.8)
+
+        #expect(viewModel.aperture == 16)
+    }
+
+    @Test
+    func theChosenAutoApertureSurvivesStopAndStart() async throws {
+        let viewModel = try makeViewModel([Self.reading(offset: 0)], mode: .auto)
+
+        viewModel.selectAutoAperture(8)
+        viewModel.start()
+        let first = await waitUntil { currentReadout(viewModel) != nil }
+        #expect(first)
+        viewModel.stop()
+
+        #expect(viewModel.autoAperture == 8)
     }
 }

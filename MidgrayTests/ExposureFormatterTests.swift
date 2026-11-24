@@ -76,4 +76,25 @@ struct ExposureFormatterTests {
     func isoHasNoGroupingSeparator() {
         #expect(ExposureFormatter.iso(12800, locale: Self.spanish) == "ISO 12800")
     }
+
+    nonisolated static let equivalentPairs: [(Double, Double, String)] = [
+        (5.6, 1.0 / 500, "f/5.6 · 1/500"), (2.8, 1.0 / 2000, "f/2.8 · 1/2000"),
+        (16, 1.0 / 4, "f/16 · 1/4"), (11, 0.5, "f/11 · 0.5 s"),
+        (8, 2, "f/8 · 2 s"), (22, 1.3, "f/22 · 1.3 s")
+    ]
+
+    @Test(arguments: ExposureFormatterTests.equivalentPairs)
+    func formatsEquivalentPairsWithoutUnitForFractions(aperture: Double, time: Double, expected: String) {
+        #expect(ExposureFormatter.equivalent(aperture: aperture, exposureTime: time, locale: Self.english) == expected)
+    }
+
+    @Test
+    func equivalentPairUsesTheLocale() {
+        #expect(ExposureFormatter.equivalent(aperture: 5.6, exposureTime: 1.3, locale: Self.spanish) == "f/5,6 · 1,3 s")
+    }
+
+    @Test
+    func equivalentPairWithInvalidTimeIsEmpty() {
+        #expect(ExposureFormatter.equivalent(aperture: 5.6, exposureTime: 0, locale: Self.english).isEmpty)
+    }
 }
