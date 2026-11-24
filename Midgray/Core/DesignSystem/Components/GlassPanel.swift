@@ -27,7 +27,7 @@ struct GlassPanel<Content: View>: View {
             .ignoresSafeArea()
 
         GlassPanel {
-            Text("Hola")
+            Text(verbatim: "Preview")
         }
     }
 }
