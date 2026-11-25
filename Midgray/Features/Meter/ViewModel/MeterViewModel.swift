@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import CoreGraphics
 import Observation
 
 @Observable
@@ -14,6 +15,7 @@ final class MeterViewModel {
     nonisolated static let compensationValues: [Double] = (-9...9).map { Double($0) / 3 }
     nonisolated static let outOfRangeThreshold: Double = 1
     nonisolated static let stabilizationThreshold: Double = 0.15
+    nonisolated static let center = CGPoint(x: 0.5, y: 0.5)
     nonisolated static let lensSettleDelay: Duration = .milliseconds(300)
 
     var mode: ExposureMode
@@ -27,6 +29,8 @@ final class MeterViewModel {
     private(set) var isHeld = false
     private(set) var selectedLens: CameraLens?
     private(set) var isSwitchingLens = false
+    private(set) var meteringMode: MeteringMode = .average
+    private(set) var spot = MeterViewModel.center
 
     private let sensor: any LightSensing
     private let lensSettleDelay: Duration
@@ -34,6 +38,7 @@ final class MeterViewModel {
     private var stabilizer = EVStabilizer(threshold: MeterViewModel.stabilizationThreshold)!
     private var task: Task<Void, Never>?
     private var latest: (ev: Double, offset: Double)?
+    private var spotDevicePoint = MeterViewModel.center
 
     init(sensor: any LightSensing,
          smoother: EVSmoother,
@@ -121,14 +126,37 @@ final class MeterViewModel {
         stabilizer.reset()
 
         isSwitchingLens = true
+        spot = Self.center
+        spotDevicePoint = Self.center
 
         let sensor = sensor
         let delay = lensSettleDelay
+        let point = meteringPoint
         Task {
             await sensor.selectLens(lens)
+            await sensor.setMeteringPoint(point)
             try? await Task.sleep(for: delay)
             isSwitchingLens = false
         }
+    }
+
+    func setMeteringMode(_ mode: MeteringMode) {
+        guard mode != meteringMode else { return }
+
+        meteringMode = mode
+        restartSignal()
+        sendMeteringPoint()
+    }
+
+    func setSpot(viewPoint: CGPoint, devicePoint: CGPoint) {
+        guard meteringMode == .spot,
+              let view = Self.normalized(viewPoint),
+              let device = Self.normalized(devicePoint) else { return }
+
+        spot = view
+        spotDevicePoint = device
+        restartSignal()
+        sendMeteringPoint()
     }
 
     func toggleHold() {
@@ -148,6 +176,26 @@ final class MeterViewModel {
 }
 
 private extension MeterViewModel {
+    var meteringPoint: CGPoint? {
+        meteringMode == .spot ? spotDevicePoint : nil
+    }
+
+    func restartSignal() {
+        smoother.reset()
+        stabilizer.reset()
+    }
+
+    func sendMeteringPoint() {
+        let sensor = sensor
+        let point = meteringPoint
+        Task { await sensor.setMeteringPoint(point) }
+    }
+
+    static func normalized(_ point: CGPoint) -> CGPoint? {
+        guard point.x.isFinite, point.y.isFinite else { return nil }
+        return CGPoint(x: min(max(point.x, 0), 1), y: min(max(point.y, 0), 1))
+    }
+
     var priority: ExposurePriority {
         switch mode {
         case .auto:
