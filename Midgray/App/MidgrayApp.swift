@@ -15,6 +15,7 @@ struct MidgrayApp: App {
     @State private var permissions = CameraPermissionsViewModel(permission: CameraPermission.live)
     private let previewSession: AVCaptureSession?
     private let settings = UserDefaultsSettingsRepository()
+    private let onboarding = UserDefaultsOnboardingRepository()
 
     init() {
         let (sensor, session) = MidgrayApp.makeSensor()
@@ -26,7 +27,7 @@ struct MidgrayApp: App {
 
     var body: some Scene {
         WindowGroup {
-            RootView(permissions: permissions, meter: viewModel, previewSession: previewSession, settings: settings)
+            RootView(permissions: permissions, meter: viewModel, previewSession: previewSession, settings: settings, onboardingRepository: onboarding)
         }
     }
 

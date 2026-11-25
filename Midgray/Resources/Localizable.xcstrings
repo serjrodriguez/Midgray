@@ -18,6 +18,23 @@
         }
       }
     },
+    "Adjust it your way" : {
+      "comment" : "Onboarding page 3 title",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Adjust it your way"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ajústalo a tu manera"
+          }
+        }
+      }
+    },
     "Allow camera" : {
       "comment" : "Button that triggers the system camera permission prompt",
       "localizations" : {
@@ -31,6 +48,23 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Permitir cámara"
+          }
+        }
+      }
+    },
+    "Allow camera access" : {
+      "comment" : "Onboarding button that asks for the camera permission",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Allow camera access"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Permitir acceso a la cámara"
           }
         }
       }
@@ -188,6 +222,40 @@
         }
       }
     },
+    "Compensate the exposure with ± and calibrate the reading so it matches your camera." : {
+      "comment" : "Onboarding page 3 text",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Compensate the exposure with ± and calibrate the reading so it matches your camera."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Compensa la exposición con ± y calibra la lectura para que coincida con tu cámara."
+          }
+        }
+      }
+    },
+    "Continue" : {
+      "comment" : "Onboarding button to go to the next page",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Continue"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Continuar"
+          }
+        }
+      }
+    },
     "Current adjustment" : {
       "comment" : "Label under the calibration value",
       "localizations" : {
@@ -235,6 +303,23 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Lente predeterminado"
+          }
+        }
+      }
+    },
+    "Done" : {
+      "comment" : "Onboarding button on the last page of the tutorial",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Done"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Listo"
           }
         }
       }
@@ -532,6 +617,23 @@
         }
       }
     },
+    "Measure the light of your scene" : {
+      "comment" : "Onboarding page 1 title",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Measure the light of your scene"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mide la luz de tu escena"
+          }
+        }
+      }
+    },
     "Measurement" : {
       "comment" : "Settings section about how the light is measured",
       "localizations" : {
@@ -617,6 +719,40 @@
         }
       }
     },
+    "Midgray uses the camera only to measure the light. It does not save photos or send data." : {
+      "comment" : "Onboarding page 4 text",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Midgray uses the camera only to measure the light. It does not save photos or send data."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Midgray usa la cámara solo para medir la luz. No guarda fotos ni envía datos."
+          }
+        }
+      }
+    },
+    "Not now" : {
+      "comment" : "Onboarding button that postpones the camera permission",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Not now"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ahora no"
+          }
+        }
+      }
+    },
     "Nothing is sent anywhere: Midgray has no accounts and collects no data." : {
       "comment" : "Privacy paragraph about data",
       "localizations" : {
@@ -668,6 +804,40 @@
         }
       }
     },
+    "Page %lld of %lld" : {
+      "comment" : "Accessibility label of the onboarding page dots",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Page %1$lld of %2$lld"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Página %1$lld de %2$lld"
+          }
+        }
+      }
+    },
+    "Point your iPhone and Midgray works out the exposure for your camera." : {
+      "comment" : "Onboarding page 1 text",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Point your iPhone and Midgray works out the exposure for your camera."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apunta el iPhone y Midgray calcula la exposición para tu cámara."
+          }
+        }
+      }
+    },
     "Privacy" : {
       "comment" : "Settings row and screen explaining what the app does with data",
       "localizations" : {
@@ -702,6 +872,23 @@
         }
       }
     },
+    "Set the aperture, shutter speed or ISO and the app calculates the other values." : {
+      "comment" : "Onboarding page 2 text",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Set the aperture, shutter speed or ISO and the app calculates the other values."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fija la apertura, la velocidad o el ISO y la app calcula los demás valores."
+          }
+        }
+      }
+    },
     "Settings" : {
       "comment" : "Title of the settings screen and its toolbar button",
       "localizations" : {
@@ -719,6 +906,23 @@
         }
       }
     },
+    "Show tutorial" : {
+      "comment" : "Settings row that replays the onboarding",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Show tutorial"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ver tutorial"
+          }
+        }
+      }
+    },
     "Shutter" : {
       "comment" : "Exposure setting name: shutter speed",
       "localizations" : {
@@ -732,6 +936,23 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Velocidad"
+          }
+        }
+      }
+    },
+    "Skip" : {
+      "comment" : "Button that leaves the onboarding pages",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Skip"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Omitir"
           }
         }
       }
@@ -855,6 +1076,23 @@
         }
       }
     },
+    "We need your camera" : {
+      "comment" : "Onboarding page 4 title",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "We need your camera"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Necesitamos tu cámara"
+          }
+        }
+      }
+    },
     "When the scene is too bright or too dark for the camera to measure reliably, Midgray warns you and the reading may be off." : {
       "comment" : "Help topic about out of range readings",
       "localizations" : {
@@ -885,6 +1123,23 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Gran angular"
+          }
+        }
+      }
+    },
+    "You choose, Midgray calculates" : {
+      "comment" : "Onboarding page 2 title",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "You choose, Midgray calculates"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tú eliges, Midgray calcula"
           }
         }
       }
