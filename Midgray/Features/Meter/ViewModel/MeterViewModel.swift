@@ -22,6 +22,7 @@ final class MeterViewModel {
     var baseISO: Double
     
     private(set) var compensation: Double = 0
+    private(set) var calibration: Double = 0
     private(set) var autoAperture: Double
     private(set) var isHeld = false
     private(set) var selectedLens: CameraLens?
@@ -58,15 +59,24 @@ final class MeterViewModel {
     var state: MeterState {
         guard let latest else { return .idle }
 
-        let compensatedEV = latest.ev - compensation
+        let calibratedEV = latest.ev + calibration
+        let compensatedEV = calibratedEV - compensation
         let readout = MeterReadout(
-            ev: latest.ev,
+            ev: calibratedEV,
             compensatedEV: compensatedEV,
             suggestion: ExposureSuggestion.suggestion(ev100: compensatedEV, baseISO: baseISO, priority: priority),
             equivalents: ExposureSuggestion.equivalents(ev100: compensatedEV, iso: baseISO)
         )
 
         return abs(latest.offset) > Self.outOfRangeThreshold ? .outOfRange(readout) : .measuring(readout)
+    }
+
+    func apply(_ settings: MeterSettings) {
+        calibration = Calibration.normalized(settings.calibration)
+
+        if let id = settings.defaultLensID, let lens = lenses.first(where: { $0.id == id }) {
+            selectLens(lens)
+        }
     }
 
     func setCompensation(_ value: Double) {

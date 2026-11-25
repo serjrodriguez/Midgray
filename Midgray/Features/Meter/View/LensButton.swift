@@ -12,8 +12,6 @@ struct LensButton: View {
     let selected: CameraLens?
     let onSelect: (CameraLens) -> Void
 
-    private static let size: CGFloat = 48
-
     var body: some View {
         Menu {
             ForEach(lenses.reversed()) { lens in
@@ -21,33 +19,18 @@ struct LensButton: View {
                     onSelect(lens)
                 } label: {
                     if lens == selected {
-                        Label(title(for: lens), systemImage: "checkmark")
+                        Label(lens.title, systemImage: "checkmark")
                     } else {
-                        Text(title(for: lens))
+                        Text(lens.title)
                     }
                 }
             }
         } label: {
             Text(selected?.zoomLabel() ?? "1×")
-                .font(.headline)
                 .monospacedDigit()
-                .foregroundStyle(.primary)
-                .frame(width: Self.size, height: Self.size)
-                .glassEffect(.regular.interactive(), in: .circle)
         }
-        .menuStyle(.button)
-        .buttonStyle(.plain)
         .accessibilityLabel("Lens")
-        .accessibilityValue(selected.map(title(for:)) ?? "")
-    }
-
-    private func title(for lens: CameraLens) -> String {
-        let name: LocalizedStringResource = switch lens.kind {
-        case .ultraWide: "Ultra wide"
-        case .wide: "Wide"
-        case .telephoto: "Telephoto"
-        }
-        return "\(String(localized: name)) · \(lens.zoomLabel())"
+        .accessibilityValue(selected?.title ?? "")
     }
 }
 
@@ -62,7 +45,14 @@ struct LensButton: View {
         LinearGradient(colors: [.indigo, .orange], startPoint: .topLeading, endPoint: .bottomTrailing)
             .ignoresSafeArea()
 
-        LensButton(lenses: lenses, selected: lenses[1], onSelect: { _ in })
+        NavigationStack {
+            Color.clear
+                .toolbar {
+                    ToolbarItem(placement: .topBarTrailing) {
+                        LensButton(lenses: lenses, selected: lenses[1], onSelect: { _ in })
+                    }
+                }
+        }
     }
     .preferredColorScheme(.dark)
 }

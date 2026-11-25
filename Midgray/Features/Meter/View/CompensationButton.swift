@@ -10,8 +10,6 @@ import SwiftUI
 struct CompensationButton: View {
     @Binding var compensation: Double
 
-    private static let size: CGFloat = 48
-
     @State private var isPresented = false
     @State private var isScrolling = false
 
@@ -20,13 +18,9 @@ struct CompensationButton: View {
             isPresented = true
         } label: {
             Text(label)
-                .font(.headline)
                 .monospacedDigit()
-                .foregroundStyle(.primary)
-                .frame(width: Self.size, height: Self.size)
-                .glassEffect(glass, in: .circle)
+                .foregroundStyle(compensation == 0 ? Color.primary : Color.accentColor)
         }
-        .buttonStyle(.plain)
         .popover(isPresented: $isPresented, arrowEdge: .top) {
             ValueWheel(
                 title: "Exposure compensation",
@@ -46,10 +40,6 @@ struct CompensationButton: View {
     private var label: String {
         compensation == 0 ? "±" : ExposureFormatter.compensation(compensation).replacingOccurrences(of: " EV", with: "")
     }
-
-    private var glass: Glass {
-        compensation == 0 ? .regular.interactive() : .regular.tint(.accentColor).interactive()
-    }
 }
 
 #Preview {
@@ -60,9 +50,14 @@ struct CompensationButton: View {
         LinearGradient(colors: [.indigo, .orange], startPoint: .topLeading, endPoint: .bottomTrailing)
             .ignoresSafeArea()
 
-        HStack {
-            CompensationButton(compensation: $compensation)
-            CompensationButton(compensation: $other)
+        NavigationStack {
+            Color.clear
+                .toolbar {
+                    ToolbarItemGroup(placement: .topBarTrailing) {
+                        CompensationButton(compensation: $compensation)
+                        CompensationButton(compensation: $other)
+                    }
+                }
         }
     }
     .preferredColorScheme(.dark)

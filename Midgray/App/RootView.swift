@@ -12,13 +12,18 @@ struct RootView: View {
     @State private var permissions: CameraPermissionsViewModel
     let meter: MeterViewModel
     let previewSession: AVCaptureSession?
+    let settings: any SettingsRepository
     @Environment(\.scenePhase) private var scenePhase
     @Environment(\.openURL) private var openURL
 
-    init(permissions: CameraPermissionsViewModel, meter: MeterViewModel, previewSession: AVCaptureSession? = nil) {
+    init(permissions: CameraPermissionsViewModel,
+         meter: MeterViewModel,
+         previewSession: AVCaptureSession? = nil,
+         settings: any SettingsRepository = InMemorySettingsRepository()) {
         _permissions = State(initialValue: permissions)
         self.meter = meter
         self.previewSession = previewSession
+        self.settings = settings
     }
 
     var body: some View {
@@ -26,7 +31,9 @@ struct RootView: View {
             Color.black.ignoresSafeArea()
 
             if permissions.access == .granted {
-                MeterView(viewModel: meter, previewSession: previewSession)
+                MeterView(viewModel: meter,
+                          previewSession: previewSession,
+                          settings: settings)
             } else {
                 CameraAccessView(
                     access: permissions.access,
