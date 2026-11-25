@@ -54,4 +54,28 @@ struct ExposureScaleTests {
     func scalesAreStrictlyAscending(scale: [Double]) {
         #expect(zip(scale, scale.dropFirst()).allSatisfy { $0 < $1 })
     }
+
+    nonisolated static let steps: [(Double, Int, Double)] = [
+        (5.6, 1, 6.3), (5.6, -1, 5.0), (5.6, 0, 5.6), (5.6, 3, 8), (5.6, -3, 4.0),
+        (1.0, -1, 1.0), (32, 1, 32), (5.6, 100, 32), (5.6, -100, 1.0), (5.7, 1, 6.3)
+    ]
+
+    @Test(arguments: ExposureScaleTests.steps)
+    func stepMovesAlongTheApertureScaleAndClampsAtTheEnds(value: Double, offset: Int, expected: Double) {
+        #expect(ExposureScale.step(value, by: offset, in: ExposureScale.apertures) == expected)
+    }
+
+    @Test
+    func stepWorksOnTheShutterAndISOScales() {
+        #expect(ExposureScale.step(1.0 / 125, by: 1, in: ExposureScale.shutterSpeeds) == 1.0 / 100)
+        #expect(ExposureScale.step(100, by: -1, in: ExposureScale.isoValues) == 80)
+        #expect(ExposureScale.step(100, by: 2, in: ExposureScale.isoValues) == 160)
+    }
+
+    @Test
+    func stepRejectsInvalidInputs() {
+        #expect(ExposureScale.step(0, by: 1, in: ExposureScale.apertures) == nil)
+        #expect(ExposureScale.step(-3, by: 1, in: ExposureScale.apertures) == nil)
+        #expect(ExposureScale.step(5.6, by: 1, in: []) == nil)
+    }
 }

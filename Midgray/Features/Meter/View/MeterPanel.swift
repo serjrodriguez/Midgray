@@ -26,7 +26,13 @@ struct MeterPanel: View {
                     .frame(maxWidth: .infinity, alignment: .leading)
                 }
 
-                ValueCellsRow(mode: viewModel.mode, suggestion: readout.suggestion)
+                ValueCellsRow(
+                    mode: viewModel.mode,
+                    suggestion: readout.suggestion,
+                    aperture: $viewModel.aperture,
+                    shutterSpeed: $viewModel.shutterSpeed,
+                    iso: $viewModel.baseISO
+                )
                 EVRow(ev: readout.ev, compensation: viewModel.compensation)
 
                 PrimaryActionButton(title: "Measure", isProminent: true, action: {})
