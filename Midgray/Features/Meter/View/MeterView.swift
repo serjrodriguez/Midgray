@@ -6,17 +6,25 @@
 //
 
 import SwiftUI
+import AVFoundation
 
 struct MeterView: View {
     @State private var viewModel: MeterViewModel
+    private let previewSession: AVCaptureSession?
 
-    init(viewModel: MeterViewModel) {
+    init(viewModel: MeterViewModel, previewSession: AVCaptureSession? = nil) {
         _viewModel = State(initialValue: viewModel)
+        self.previewSession = previewSession
     }
 
     var body: some View {
         ZStack {
             Color.black.ignoresSafeArea()
+
+            if let previewSession {
+                CameraPreview(session: previewSession)
+                    .ignoresSafeArea()
+            }
 
             content
         }
@@ -51,6 +59,18 @@ struct MeterView: View {
         }
         .padding(.horizontal, Spacing.s12)
         .padding(.bottom, Spacing.s8)
+        .overlay(alignment: .topTrailing) {
+            CompensationButton(compensation: compensationBinding)
+                .padding(.horizontal, Spacing.s16)
+                .padding(.top, Spacing.s8)
+        }
+    }
+
+    private var compensationBinding: Binding<Double> {
+        Binding(
+            get: { viewModel.compensation },
+            set: { viewModel.setCompensation($0) }
+        )
     }
 }
 
