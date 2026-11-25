@@ -35,9 +35,13 @@ struct MeterPanel: View {
                 )
                 EVRow(ev: readout.ev, compensation: viewModel.compensation)
 
-                PrimaryActionButton(title: "Measure", isProminent: true, action: {})
+                PrimaryActionButton(title: holdTitle, isProminent: !viewModel.isHeld, action: viewModel.toggleHold)
             }
         }
+    }
+
+    private var holdTitle: LocalizedStringKey {
+        viewModel.isHeld ? "Held · tap to measure again" : "Measure"
     }
 
     private var modePicker: some View {

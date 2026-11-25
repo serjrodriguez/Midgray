@@ -156,7 +156,6 @@
     },
     "Held · tap to measure again" : {
       "comment" : "Main button label while the reading is held",
-      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
