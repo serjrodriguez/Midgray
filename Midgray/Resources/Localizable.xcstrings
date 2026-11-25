@@ -137,6 +137,23 @@
         }
       }
     },
+    "Exposure compensation" : {
+      "comment" : "Toolbar button and wheel title to bias the exposure in EV steps",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Exposure compensation"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Compensación de exposición"
+          }
+        }
+      }
+    },
     "Exposure mode" : {
       "comment" : "Accessibility label of the exposure mode selector",
       "localizations" : {

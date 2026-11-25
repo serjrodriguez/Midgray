@@ -431,4 +431,20 @@ struct MeterViewModelTests {
 
         #expect(viewModel.autoAperture == 8)
     }
+
+    @Test
+    func compensationValuesCoverTheRangeInThirds() {
+        let values = MeterViewModel.compensationValues
+        #expect(values.count == 19)
+        #expect(values.first == MeterViewModel.compensationRange.lowerBound)
+        #expect(values.last == MeterViewModel.compensationRange.upperBound)
+        #expect(values.contains(0))
+    }
+
+    @Test(arguments: MeterViewModel.compensationValues)
+    func everyCompensationValueIsAcceptedUnchanged(value: Double) throws {
+        let viewModel = try makeViewModel([])
+        viewModel.setCompensation(value)
+        #expect(viewModel.compensation == value)
+    }
 }

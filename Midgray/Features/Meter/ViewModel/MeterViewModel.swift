@@ -11,6 +11,7 @@ import Observation
 @Observable
 final class MeterViewModel {
     nonisolated static let compensationRange: ClosedRange<Double> = -3...3
+    nonisolated static let compensationValues: [Double] = (-9...9).map { Double($0) / 3 }
     nonisolated static let outOfRangeThreshold: Double = 1
     nonisolated static let stabilizationThreshold: Double = 0.15
 

@@ -59,6 +59,18 @@ struct MeterView: View {
         }
         .padding(.horizontal, Spacing.s12)
         .padding(.bottom, Spacing.s8)
+        .overlay(alignment: .topTrailing) {
+            CompensationButton(compensation: compensationBinding)
+                .padding(.horizontal, Spacing.s16)
+                .padding(.top, Spacing.s8)
+        }
+    }
+
+    private var compensationBinding: Binding<Double> {
+        Binding(
+            get: { viewModel.compensation },
+            set: { viewModel.setCompensation($0) }
+        )
     }
 }
 
