@@ -1,6 +1,23 @@
 {
   "sourceLanguage" : "en",
   "strings" : {
+    "Allow camera" : {
+      "comment" : "Button that triggers the system camera permission prompt",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Allow camera"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Permitir cámara"
+          }
+        }
+      }
+    },
     "Aperture" : {
       "comment" : "Exposure setting name: lens opening",
       "localizations" : {
@@ -31,6 +48,74 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Auto"
+          }
+        }
+      }
+    },
+    "Camera access" : {
+      "comment" : "Title of the screen that asks for camera permission",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Camera access"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Acceso a la cámara"
+          }
+        }
+      }
+    },
+    "Camera access is off" : {
+      "comment" : "Title when the user denied the camera permission",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Camera access is off"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "El acceso a la cámara está desactivado"
+          }
+        }
+      }
+    },
+    "Camera access is restricted on this device, so Midgray cannot measure light." : {
+      "comment" : "Explains a restricted camera permission",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Camera access is restricted on this device, so Midgray cannot measure light."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "El acceso a la cámara está restringido en este dispositivo, por lo que Midgray no puede medir la luz."
+          }
+        }
+      }
+    },
+    "Camera unavailable" : {
+      "comment" : "Title when camera access is restricted by the system",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Camera unavailable"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cámara no disponible"
           }
         }
       }
@@ -71,6 +156,7 @@
     },
     "Held · tap to measure again" : {
       "comment" : "Main button label while the reading is held",
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -141,6 +227,40 @@
         }
       }
     },
+    "Midgray needs the camera to measure the light of a scene. It does not save photos or send data." : {
+      "comment" : "Explains why the camera permission is requested",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Midgray needs the camera to measure the light of a scene. It does not save photos or send data."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Midgray necesita la cámara para medir la luz de una escena. No guarda fotos ni envía datos."
+          }
+        }
+      }
+    },
+    "Open Settings" : {
+      "comment" : "Button that opens the app page in system Settings",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Open Settings"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Abrir Ajustes"
+          }
+        }
+      }
+    },
     "Out of range" : {
       "comment" : "Warning when the scene is outside what the camera can meter",
       "localizations" : {
@@ -171,6 +291,23 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Velocidad"
+          }
+        }
+      }
+    },
+    "Turn on camera access for Midgray in Settings to measure light." : {
+      "comment" : "Tells the user how to recover from a denied camera permission",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Turn on camera access for Midgray in Settings to measure light."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Activa el acceso a la cámara para Midgray en Ajustes para medir la luz."
           }
         }
       }
