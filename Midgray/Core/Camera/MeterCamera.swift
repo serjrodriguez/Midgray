@@ -27,8 +27,14 @@ actor MeterCamera: LightSensing {
 
     func selectLens(_ lens: CameraLens) {
         guard let newDevice = AVCaptureDevice(uniqueID: lens.id),
-              newDevice != device,
-              let newInput = try? AVCaptureDeviceInput(device: newDevice) else { return }
+              newDevice != device else { return }
+
+        guard !session.inputs.isEmpty else {
+            device = newDevice
+            return
+        }
+
+        guard let newInput = try? AVCaptureDeviceInput(device: newDevice) else { return }
 
         session.beginConfiguration()
         for input in session.inputs { session.removeInput(input) }

@@ -14,16 +14,19 @@ struct MidgrayApp: App {
     @State private var viewModel: MeterViewModel
     @State private var permissions = CameraPermissionsViewModel(permission: CameraPermission.live)
     private let previewSession: AVCaptureSession?
+    private let settings = UserDefaultsSettingsRepository()
 
     init() {
         let (sensor, session) = MidgrayApp.makeSensor()
-        _viewModel = State(initialValue: MeterViewModel(sensor: sensor, smoother: EVSmoother()!))
+        let meter = MeterViewModel(sensor: sensor, smoother: EVSmoother()!)
+        meter.apply(settings.load())
+        _viewModel = State(initialValue: meter)
         previewSession = session
     }
 
     var body: some Scene {
         WindowGroup {
-            RootView(permissions: permissions, meter: viewModel, previewSession: previewSession)
+            RootView(permissions: permissions, meter: viewModel, previewSession: previewSession, settings: settings)
         }
     }
 

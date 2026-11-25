@@ -10,14 +10,68 @@ import AVFoundation
 
 struct MeterView: View {
     @State private var viewModel: MeterViewModel
+    @State private var settingsViewModel: SettingsViewModel?
     private let previewSession: AVCaptureSession?
+    private let settings: any SettingsRepository
 
-    init(viewModel: MeterViewModel, previewSession: AVCaptureSession? = nil) {
+    init(viewModel: MeterViewModel,
+         previewSession: AVCaptureSession? = nil,
+         settings: any SettingsRepository = InMemorySettingsRepository()) {
         _viewModel = State(initialValue: viewModel)
         self.previewSession = previewSession
+        self.settings = settings
     }
 
     var body: some View {
+        NavigationStack {
+            screen
+                .toolbar { toolbar }
+                .toolbarBackgroundVisibility(.hidden, for: .navigationBar)
+        }
+        .sheet(item: $settingsViewModel) { SettingsView(viewModel: $0) }
+        .preferredColorScheme(.dark)
+        .task { viewModel.start() }
+        .onDisappear { viewModel.stop() }
+    }
+
+    @ToolbarContentBuilder
+    private var toolbar: some ToolbarContent {
+        ToolbarItem(placement: .topBarLeading) {
+            Button {
+                settingsViewModel = makeSettingsViewModel()
+            } label: {
+                Image(systemName: "gearshape")
+            }
+            .accessibilityLabel("Settings")
+        }
+
+        ToolbarItemGroup(placement: .topBarTrailing) {
+            if viewModel.lenses.count > 1 {
+                LensButton(
+                    lenses: viewModel.lenses,
+                    selected: viewModel.selectedLens,
+                    onSelect: viewModel.selectLens
+                )
+            }
+
+            CompensationButton(compensation: compensationBinding)
+        }
+    }
+
+    private var compensationBinding: Binding<Double> {
+        Binding(
+            get: { viewModel.compensation },
+            set: { viewModel.setCompensation($0) }
+        )
+    }
+
+    private func makeSettingsViewModel() -> SettingsViewModel {
+        SettingsViewModel(repository: settings, lenses: viewModel.lenses) { [viewModel] in
+            viewModel.apply($0)
+        }
+    }
+
+    private var screen: some View {
         ZStack {
             Color.black.ignoresSafeArea()
 
@@ -30,9 +84,6 @@ struct MeterView: View {
 
             content
         }
-        .preferredColorScheme(.dark)
-        .task { viewModel.start() }
-        .onDisappear { viewModel.stop() }
     }
 
     @ViewBuilder
@@ -61,11 +112,6 @@ struct MeterView: View {
         }
         .padding(.horizontal, Spacing.s12)
         .padding(.bottom, Spacing.s8)
-        .overlay(alignment: .topTrailing) {
-            MeterToolbar(viewModel: viewModel)
-                .padding(.horizontal, Spacing.s16)
-                .padding(.top, Spacing.s8)
-        }
     }
 
 }
