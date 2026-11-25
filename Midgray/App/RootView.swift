@@ -10,6 +10,7 @@ import AVFoundation
 
 struct RootView: View {
     @State private var permissions: CameraPermissionsViewModel
+    @State private var onboarding: OnboardingViewModel?
     let meter: MeterViewModel
     let previewSession: AVCaptureSession?
     let settings: any SettingsRepository
@@ -19,8 +20,14 @@ struct RootView: View {
     init(permissions: CameraPermissionsViewModel,
          meter: MeterViewModel,
          previewSession: AVCaptureSession? = nil,
-         settings: any SettingsRepository = InMemorySettingsRepository()) {
+         settings: any SettingsRepository = InMemorySettingsRepository(),
+         onboardingRepository: any OnboardingRepository = InMemoryOnboardingRepository(completed: true)) {
         _permissions = State(initialValue: permissions)
+        _onboarding = State(initialValue: onboardingRepository.hasCompleted ? nil : OnboardingViewModel(
+            mode: .firstLaunch,
+            requestCamera: { await permissions.request() },
+            onFinish: { onboardingRepository.markCompleted() }
+        ))
         self.meter = meter
         self.previewSession = previewSession
         self.settings = settings
@@ -30,7 +37,9 @@ struct RootView: View {
         ZStack {
             Color.black.ignoresSafeArea()
 
-            if permissions.access == .granted {
+            if let onboarding, !onboarding.isFinished {
+                OnboardingView(viewModel: onboarding)
+            } else if permissions.access == .granted {
                 MeterView(viewModel: meter,
                           previewSession: previewSession,
                           settings: settings)

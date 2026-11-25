@@ -9,6 +9,7 @@ import SwiftUI
 
 struct SettingsView: View {
     @State private var viewModel: SettingsViewModel
+    @State private var tutorial: OnboardingViewModel?
     @Environment(\.dismiss) private var dismiss
 
     init(viewModel: SettingsViewModel) {
@@ -26,6 +27,10 @@ struct SettingsView: View {
             .background(Color.black)
             .navigationTitle("Settings")
             .navigationBarTitleDisplayMode(.inline)
+            .navigationDestination(item: $tutorial) { tutorialViewModel in
+                OnboardingView(viewModel: tutorialViewModel)
+                    .toolbar(.hidden, for: .navigationBar)
+            }
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
                     Button(role: .cancel) { dismiss() }
@@ -71,6 +76,13 @@ struct SettingsView: View {
 
     private var helpSection: some View {
         Section("Help") {
+            Button {
+                tutorial = OnboardingViewModel(mode: .replay)
+            } label: {
+                SettingsRow(title: "Show tutorial", value: nil, symbol: "questionmark.circle", showsChevron: true)
+            }
+            .foregroundStyle(Color.primary)
+
             NavigationLink {
                 HelpView()
             } label: {
@@ -97,6 +109,7 @@ private struct SettingsRow: View {
     let title: LocalizedStringKey
     let value: String?
     let symbol: String
+    var showsChevron = false
 
     var body: some View {
         HStack(spacing: Spacing.s8) {
@@ -113,7 +126,15 @@ private struct SettingsRow: View {
             Image(systemName: symbol)
                 .foregroundStyle(Color.accentColor)
                 .accessibilityHidden(true)
+
+            if showsChevron {
+                Image(systemName: "chevron.right")
+                    .font(.footnote.weight(.semibold))
+                    .foregroundStyle(.tertiary)
+                    .accessibilityHidden(true)
+            }
         }
+        .contentShape(Rectangle())
     }
 }
 
