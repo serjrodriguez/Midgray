@@ -209,6 +209,23 @@
         }
       }
     },
+    "Lens" : {
+      "comment" : "Accessibility label of the lens selector button",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lens"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lente"
+          }
+        }
+      }
+    },
     "Measure" : {
       "comment" : "Main button of the meter, takes the reading",
       "localizations" : {
@@ -311,6 +328,23 @@
         }
       }
     },
+    "Telephoto" : {
+      "comment" : "Name of the telephoto camera lens",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Telephoto"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Teleobjetivo"
+          }
+        }
+      }
+    },
     "Turn on camera access for Midgray in Settings to measure light." : {
       "comment" : "Tells the user how to recover from a denied camera permission",
       "localizations" : {
@@ -324,6 +358,40 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Activa el acceso a la cámara para Midgray en Ajustes para medir la luz."
+          }
+        }
+      }
+    },
+    "Ultra wide" : {
+      "comment" : "Name of the ultra wide camera lens",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ultra wide"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ultra gran angular"
+          }
+        }
+      }
+    },
+    "Wide" : {
+      "comment" : "Name of the main wide camera lens",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wide"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gran angular"
           }
         }
       }

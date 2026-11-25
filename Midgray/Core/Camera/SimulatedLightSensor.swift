@@ -10,10 +10,12 @@ import Foundation
 nonisolated struct SimulatedLightSensor: LightSensing {
     let offsets: [Double]
     let interval: Duration
+    let lenses: [CameraLens]
 
-    init(offsets: [Double] = [0], interval: Duration = .milliseconds(100)) {
+    init(offsets: [Double] = [0], interval: Duration = .milliseconds(100), lenses: [CameraLens] = []) {
         self.offsets = offsets
         self.interval = interval
+        self.lenses = lenses
     }
 
     func readings() -> AsyncStream<CameraReading> {

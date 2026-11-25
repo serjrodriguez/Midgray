@@ -24,6 +24,8 @@ struct MeterView: View {
             if let previewSession {
                 CameraPreview(session: previewSession)
                     .ignoresSafeArea()
+                    .opacity(viewModel.isSwitchingLens ? 0 : 1)
+                    .animation(.easeInOut(duration: 0.2), value: viewModel.isSwitchingLens)
             }
 
             content
@@ -60,18 +62,12 @@ struct MeterView: View {
         .padding(.horizontal, Spacing.s12)
         .padding(.bottom, Spacing.s8)
         .overlay(alignment: .topTrailing) {
-            CompensationButton(compensation: compensationBinding)
+            MeterToolbar(viewModel: viewModel)
                 .padding(.horizontal, Spacing.s16)
                 .padding(.top, Spacing.s8)
         }
     }
 
-    private var compensationBinding: Binding<Double> {
-        Binding(
-            get: { viewModel.compensation },
-            set: { viewModel.setCompensation($0) }
-        )
-    }
 }
 
 private struct OutOfRangeBadge: View {
