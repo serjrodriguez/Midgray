@@ -6,17 +6,25 @@
 //
 
 import SwiftUI
+import AVFoundation
 
 struct MeterView: View {
     @State private var viewModel: MeterViewModel
+    private let previewSession: AVCaptureSession?
 
-    init(viewModel: MeterViewModel) {
+    init(viewModel: MeterViewModel, previewSession: AVCaptureSession? = nil) {
         _viewModel = State(initialValue: viewModel)
+        self.previewSession = previewSession
     }
 
     var body: some View {
         ZStack {
             Color.black.ignoresSafeArea()
+
+            if let previewSession {
+                CameraPreview(session: previewSession)
+                    .ignoresSafeArea()
+            }
 
             content
         }

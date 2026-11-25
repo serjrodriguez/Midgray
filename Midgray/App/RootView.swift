@@ -6,16 +6,19 @@
 //
 
 import SwiftUI
+import AVFoundation
 
 struct RootView: View {
     @State private var permissions: CameraPermissionsViewModel
     let meter: MeterViewModel
+    let previewSession: AVCaptureSession?
     @Environment(\.scenePhase) private var scenePhase
     @Environment(\.openURL) private var openURL
 
-    init(permissions: CameraPermissionsViewModel, meter: MeterViewModel) {
+    init(permissions: CameraPermissionsViewModel, meter: MeterViewModel, previewSession: AVCaptureSession? = nil) {
         _permissions = State(initialValue: permissions)
         self.meter = meter
+        self.previewSession = previewSession
     }
 
     var body: some View {
@@ -23,7 +26,7 @@ struct RootView: View {
             Color.black.ignoresSafeArea()
 
             if permissions.access == .granted {
-                MeterView(viewModel: meter)
+                MeterView(viewModel: meter, previewSession: previewSession)
             } else {
                 CameraAccessView(
                     access: permissions.access,

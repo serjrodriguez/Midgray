@@ -9,6 +9,8 @@ import Foundation
 import AVFoundation
 
 actor MeterCamera: LightSensing {
+    nonisolated(unsafe) let session = AVCaptureSession()
+
     nonisolated func readings() -> AsyncStream<CameraReading> {
         AsyncStream { continuation in
             let task = Task { await self.run(continuation) }
@@ -24,21 +26,22 @@ actor MeterCamera: LightSensing {
             return
         }
         
-        let session = AVCaptureSession()
-        session.automaticallyConfiguresApplicationAudioSession = false
-        guard session.canAddInput(input) else {
-            continuation.finish()
-            return
+        if session.inputs.isEmpty {
+            session.automaticallyConfiguresApplicationAudioSession = false
+            guard session.canAddInput(input) else {
+                continuation.finish()
+                return
+            }
+            session.addInput(input)
+
+            let output = AVCaptureVideoDataOutput()
+            output.alwaysDiscardsLateVideoFrames = true
+            guard session.canAddOutput(output) else {
+                continuation.finish()
+                return
+            }
+            session.addOutput(output)
         }
-        session.addInput(input)
-        
-        let output = AVCaptureVideoDataOutput()
-        output.alwaysDiscardsLateVideoFrames = true
-        guard session.canAddOutput(output) else {
-            continuation.finish()
-            return
-        }
-        session.addOutput(output)
         
         if device.exposureMode != .continuousAutoExposure, (try? device.lockForConfiguration()) != nil {
             device.exposureMode = .continuousAutoExposure
