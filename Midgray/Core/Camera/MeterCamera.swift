@@ -13,6 +13,7 @@ actor MeterCamera: LightSensing {
     nonisolated let lenses: [CameraLens]
 
     private var device: AVCaptureDevice?
+    private var meteringPoint: CGPoint?
 
     init() {
         lenses = MeterCamera.discoverLenses()
@@ -25,9 +26,18 @@ actor MeterCamera: LightSensing {
         }
     }
 
+    func setMeteringPoint(_ point: CGPoint?) {
+        meteringPoint = point
+
+        guard let device else { return }
+        prepareExposure(of: device)
+    }
+
     func selectLens(_ lens: CameraLens) {
         guard let newDevice = AVCaptureDevice(uniqueID: lens.id),
               newDevice != device else { return }
+
+        meteringPoint = nil
 
         guard !session.inputs.isEmpty else {
             device = newDevice
@@ -98,6 +108,9 @@ actor MeterCamera: LightSensing {
     private func prepareExposure(of camera: AVCaptureDevice) {
         guard (try? camera.lockForConfiguration()) != nil else { return }
 
+        if camera.isExposurePointOfInterestSupported {
+            camera.exposurePointOfInterest = meteringPoint ?? CGPoint(x: 0.5, y: 0.5)
+        }
         if camera.isExposureModeSupported(.continuousAutoExposure) {
             camera.exposureMode = .continuousAutoExposure
         }

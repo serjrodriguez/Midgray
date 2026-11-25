@@ -18,23 +18,6 @@
         }
       }
     },
-    "Adjust it your way" : {
-      "comment" : "Onboarding page 3 title",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Adjust it your way"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ajústalo a tu manera"
-          }
-        }
-      }
-    },
     "Allow camera" : {
       "comment" : "Button that triggers the system camera permission prompt",
       "localizations" : {
@@ -116,6 +99,57 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Auto"
+          }
+        }
+      }
+    },
+    "Average" : {
+      "comment" : "Metering mode that measures the whole scene",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Average"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Promedio"
+          }
+        }
+      }
+    },
+    "Average measures the whole scene. Spot measures only the area around the point you tap on the screen. Switch between them with the viewfinder button." : {
+      "comment" : "Help topic about metering modes",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Average measures the whole scene. Spot measures only the area around the point you tap on the screen. Switch between them with the viewfinder button."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Promedio mide toda la escena. Puntual mide solo la zona alrededor del punto que tocas en la pantalla. Cambia entre ambos con el botón del visor."
+          }
+        }
+      }
+    },
+    "Average or spot" : {
+      "comment" : "Onboarding page 3 title",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Average or spot"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Promedio o puntual"
           }
         }
       }
@@ -218,23 +252,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Compara la lectura con tu exposímetro o tu cámara y ajusta hasta que coincidan."
-          }
-        }
-      }
-    },
-    "Compensate the exposure with ± and calibrate the reading so it matches your camera." : {
-      "comment" : "Onboarding page 3 text",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Compensate the exposure with ± and calibrate the reading so it matches your camera."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Compensa la exposición con ± y calibra la lectura para que coincida con tu cámara."
           }
         }
       }
@@ -634,6 +651,23 @@
         }
       }
     },
+    "Measure the whole scene or tap a point to measure only that area." : {
+      "comment" : "Onboarding page 3 text",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Measure the whole scene or tap a point to measure only that area."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mide toda la escena o toca un punto para medir solo esa zona."
+          }
+        }
+      }
+    },
     "Measurement" : {
       "comment" : "Settings section about how the light is measured",
       "localizations" : {
@@ -664,6 +698,23 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Midiendo..."
+          }
+        }
+      }
+    },
+    "Metering" : {
+      "comment" : "Accessibility label of the metering mode button and help topic title",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Metering"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Medición"
           }
         }
       }
@@ -953,6 +1004,23 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Omitir"
+          }
+        }
+      }
+    },
+    "Spot" : {
+      "comment" : "Metering mode that measures only a tapped point",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Spot"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Puntual"
           }
         }
       }

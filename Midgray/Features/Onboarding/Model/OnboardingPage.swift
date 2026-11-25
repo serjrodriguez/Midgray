@@ -10,14 +10,14 @@ import Foundation
 nonisolated enum OnboardingPage: CaseIterable, Hashable, Sendable {
     case measure
     case modes
-    case adjust
+    case metering
     case camera
 
     var symbol: String {
         switch self {
         case .measure: "sun.max"
         case .modes: "camera.aperture"
-        case .adjust: "plusminus"
+        case .metering: "viewfinder"
         case .camera: "camera.fill"
         }
     }

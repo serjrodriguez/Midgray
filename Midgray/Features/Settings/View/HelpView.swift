@@ -18,6 +18,7 @@ struct HelpView: View {
         Topic(id: "ev", title: "EV", body: "EV measures how much light there is in the scene. Higher numbers mean brighter light: around 15 on a sunny day, around 5 in a dim room."),
         Topic(id: "equivalents", title: "Equivalent exposures", body: "In Auto mode each chip is an aperture and shutter speed pair that lets in the same light. Tap one to use it."),
         Topic(id: "modes", title: "Exposure modes", body: "Aperture and Shutter keep the value you set and suggest the other. ISO suggests the sensitivity for the aperture and shutter speed you set."),
+        Topic(id: "metering", title: "Metering", body: "Average measures the whole scene. Spot measures only the area around the point you tap on the screen. Switch between them with the viewfinder button."),
         Topic(id: "compensation", title: "Exposure compensation", body: "The ± button makes the suggestion brighter or darker than the reading, in steps of a third of a stop."),
         Topic(id: "range", title: "Out of range", body: "When the scene is too bright or too dark for the camera to measure reliably, Midgray warns you and the reading may be off."),
         Topic(id: "hold", title: "Hold", body: "Tap Measure to freeze the current reading. Tap again to keep measuring."),

@@ -32,8 +32,8 @@ final class OnboardingViewModel {
         self.onFinish = onFinish
 
         switch mode {
-        case .firstLaunch: pages = [.measure, .modes, .adjust, .camera]
-        case .replay: pages = [.measure, .modes, .adjust]
+        case .firstLaunch: pages = [.measure, .modes, .metering, .camera]
+        case .replay: pages = [.measure, .modes, .metering]
         }
     }
 

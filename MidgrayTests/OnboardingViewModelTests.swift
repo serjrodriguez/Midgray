@@ -28,13 +28,13 @@ struct OnboardingViewModelTests {
     @Test
     func firstLaunchHasFourPagesEndingWithTheCamera() {
         let (viewModel, _) = makeViewModel(mode: .firstLaunch)
-        #expect(viewModel.pages == [.measure, .modes, .adjust, .camera])
+        #expect(viewModel.pages == [.measure, .modes, .metering, .camera])
     }
 
     @Test
     func replayLeavesOutTheCameraPage() {
         let (viewModel, _) = makeViewModel(mode: .replay)
-        #expect(viewModel.pages == [.measure, .modes, .adjust])
+        #expect(viewModel.pages == [.measure, .modes, .metering])
     }
 
     @Test
@@ -55,7 +55,7 @@ struct OnboardingViewModelTests {
         #expect(viewModel.currentPage == .modes)
 
         viewModel.next()
-        #expect(viewModel.currentPage == .adjust)
+        #expect(viewModel.currentPage == .metering)
 
         #expect(probe.finishes == 0)
         #expect(!viewModel.isFinished)

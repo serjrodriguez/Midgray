@@ -128,7 +128,7 @@ private extension OnboardingPage {
         switch self {
         case .measure: "Measure the light of your scene"
         case .modes: "You choose, Midgray calculates"
-        case .adjust: "Adjust it your way"
+        case .metering: "Average or spot"
         case .camera: "We need your camera"
         }
     }
@@ -137,7 +137,7 @@ private extension OnboardingPage {
         switch self {
         case .measure: "Point your iPhone and Midgray works out the exposure for your camera."
         case .modes: "Set the aperture, shutter speed or ISO and the app calculates the other values."
-        case .adjust: "Compensate the exposure with ± and calibrate the reading so it matches your camera."
+        case .metering: "Measure the whole scene or tap a point to measure only that area."
         case .camera: "Midgray uses the camera only to measure the light. It does not save photos or send data."
         }
     }

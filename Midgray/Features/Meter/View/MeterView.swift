@@ -54,6 +54,8 @@ struct MeterView: View {
                 )
             }
 
+            MeteringButton(mode: viewModel.meteringMode, onSelect: viewModel.setMeteringMode)
+
             CompensationButton(compensation: compensationBinding)
         }
     }
@@ -75,15 +77,40 @@ struct MeterView: View {
         ZStack {
             Color.black.ignoresSafeArea()
 
-            if let previewSession {
-                CameraPreview(session: previewSession)
-                    .ignoresSafeArea()
-                    .opacity(viewModel.isSwitchingLens ? 0 : 1)
-                    .animation(.easeInOut(duration: 0.2), value: viewModel.isSwitchingLens)
-            }
+            background
 
             content
         }
+    }
+
+    private var background: some View {
+        GeometryReader { geometry in
+            ZStack {
+                if let previewSession {
+                    CameraPreview(session: previewSession, onTap: handleSpotTap)
+                        .opacity(viewModel.isSwitchingLens ? 0 : 1)
+                        .animation(.easeInOut(duration: 0.2), value: viewModel.isSwitchingLens)
+                } else {
+                    Color.clear
+                        .contentShape(Rectangle())
+                        .onTapGesture { location in
+                            let point = CGPoint(x: location.x / geometry.size.width, y: location.y / geometry.size.height)
+                            handleSpotTap(viewPoint: point, devicePoint: point)
+                        }
+                }
+
+                if viewModel.meteringMode == .spot, viewModel.state != .idle {
+                    SpotReticle()
+                        .position(x: viewModel.spot.x * geometry.size.width, y: viewModel.spot.y * geometry.size.height)
+                        .animation(.snappy, value: viewModel.spot)
+                }
+            }
+        }
+        .ignoresSafeArea()
+    }
+
+    private func handleSpotTap(viewPoint: CGPoint, devicePoint: CGPoint) {
+        viewModel.setSpot(viewPoint: viewPoint, devicePoint: devicePoint)
     }
 
     @ViewBuilder
