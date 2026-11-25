@@ -19,6 +19,7 @@ struct EquivalentChip: View {
         Text(title)
             .font(.caption)
             .fontWeight(isSelected ? .semibold : .regular)
+            .monospacedDigit()
             .foregroundStyle(.primary)
             .padding(.horizontal, Spacing.s16)
             .frame(minHeight: Spacing.s32)

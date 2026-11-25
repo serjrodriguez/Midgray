@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import UIKit
 
 struct ValueWheel<Value: Hashable>: View {
     let title: LocalizedStringKey
@@ -16,6 +17,7 @@ struct ValueWheel<Value: Hashable>: View {
 
     @State private var position: Value?
     @State private var isPositioned = false
+    @State private var feedback = UISelectionFeedbackGenerator()
     @ScaledMetric(relativeTo: .title) private var rowHeight: CGFloat = 44
     @ScaledMetric(relativeTo: .title) private var selectedSize: CGFloat = 26
     @ScaledMetric(relativeTo: .body) private var otherSize: CGFloat = 17
@@ -66,7 +68,7 @@ struct ValueWheel<Value: Hashable>: View {
                 .allowsHitTesting(false)
         }
         .shadow(color: .black.opacity(0.5), radius: 24, y: 8)
-        .sensoryFeedback(.selection, trigger: selection)
+        .onAppear { feedback.prepare() }
         .accessibilityElement()
         .accessibilityLabel(title)
         .accessibilityValue(format(selection))
@@ -96,6 +98,14 @@ struct ValueWheel<Value: Hashable>: View {
             .contentMargins(.vertical, rowHeight, for: .scrollContent)
             .scrollIndicators(.hidden)
             .frame(height: rowHeight * 3)
+            .onScrollGeometryChange(for: Int.self) { geometry in
+                Int(((geometry.contentOffset.y + geometry.contentInsets.top) / rowHeight).rounded())
+            } action: { _, _ in
+                guard isPositioned else { return }
+
+                feedback.selectionChanged()
+                feedback.prepare()
+            }
             .task {
                 proxy.scrollTo(selection, anchor: .center)
                 await Task.yield()

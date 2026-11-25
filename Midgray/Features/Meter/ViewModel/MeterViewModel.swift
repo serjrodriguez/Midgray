@@ -12,6 +12,7 @@ import Observation
 final class MeterViewModel {
     nonisolated static let compensationRange: ClosedRange<Double> = -3...3
     nonisolated static let outOfRangeThreshold: Double = 1
+    nonisolated static let stabilizationThreshold: Double = 0.15
 
     var mode: ExposureMode
     var aperture: Double
@@ -23,6 +24,7 @@ final class MeterViewModel {
 
     private let sensor: any LightSensing
     private var smoother: EVSmoother
+    private var stabilizer = EVStabilizer(threshold: MeterViewModel.stabilizationThreshold)!
     private var task: Task<Void, Never>?
     private var latest: (ev: Double, offset: Double)?
 
@@ -71,9 +73,11 @@ final class MeterViewModel {
         task = Task { [weak self] in
             for await reading in readings {
                 guard let self else { return }
-                guard let value = reading.ev100, let smoothed = smoother.add(value) else { continue }
+                guard let value = reading.ev100,
+                      let smoothed = smoother.add(value),
+                      let stable = stabilizer.add(smoothed) else { continue }
 
-                latest = (smoothed, reading.exposureTargetOffset)
+                latest = (stable, reading.exposureTargetOffset)
             }
         }
     }
@@ -82,6 +86,7 @@ final class MeterViewModel {
         task?.cancel()
         task = nil
         smoother.reset()
+        stabilizer.reset()
         latest = nil
     }
 
