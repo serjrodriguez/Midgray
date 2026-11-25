@@ -10,6 +10,13 @@ import AVFoundation
 
 actor MeterCamera: LightSensing {
     nonisolated(unsafe) let session = AVCaptureSession()
+    nonisolated let lenses: [CameraLens]
+
+    private var device: AVCaptureDevice?
+
+    init() {
+        lenses = MeterCamera.discoverLenses()
+    }
 
     nonisolated func readings() -> AsyncStream<CameraReading> {
         AsyncStream { continuation in
@@ -17,51 +24,112 @@ actor MeterCamera: LightSensing {
             continuation.onTermination = { _ in task.cancel() }
         }
     }
-    
+
+    func selectLens(_ lens: CameraLens) {
+        guard let newDevice = AVCaptureDevice(uniqueID: lens.id),
+              newDevice != device,
+              let newInput = try? AVCaptureDeviceInput(device: newDevice) else { return }
+
+        session.beginConfiguration()
+        for input in session.inputs { session.removeInput(input) }
+
+        guard session.canAddInput(newInput) else {
+            session.commitConfiguration()
+            return
+        }
+
+        session.addInput(newInput)
+        session.commitConfiguration()
+
+        prepareExposure(of: newDevice)
+        device = newDevice
+    }
+
     private func run(_ continuation: AsyncStream<CameraReading>.Continuation) async {
-        guard let device = AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: .back),
-              let input = try? AVCaptureDeviceInput(device: device)
-                else {
+        guard configureSession() else {
             continuation.finish()
             return
         }
-        
-        if session.inputs.isEmpty {
-            session.automaticallyConfiguresApplicationAudioSession = false
-            guard session.canAddInput(input) else {
-                continuation.finish()
-                return
-            }
-            session.addInput(input)
 
-            let output = AVCaptureVideoDataOutput()
-            output.alwaysDiscardsLateVideoFrames = true
-            guard session.canAddOutput(output) else {
-                continuation.finish()
-                return
-            }
-            session.addOutput(output)
-        }
-        
-        if device.exposureMode != .continuousAutoExposure, (try? device.lockForConfiguration()) != nil {
-            device.exposureMode = .continuousAutoExposure
-            device.unlockForConfiguration()
-        }
-        
         session.startRunning()
-        
+
         while !Task.isCancelled {
-            let reading = CameraReading(
-                aperture: Double(device.lensAperture),
-                exposureTime: CMTimeGetSeconds(device.exposureDuration),
-                iso: Double(device.iso),
-                exposureTargetOffset: Double(device.exposureTargetOffset)
-            )
-            continuation.yield(reading)
+            if let device {
+                continuation.yield(CameraReading(
+                    aperture: Double(device.lensAperture),
+                    exposureTime: CMTimeGetSeconds(device.exposureDuration),
+                    iso: Double(device.iso),
+                    exposureTargetOffset: Double(device.exposureTargetOffset)
+                ))
+            }
             try? await Task.sleep(for: .milliseconds(100))
         }
-        
+
         session.stopRunning()
         continuation.finish()
+    }
+
+    private func configureSession() -> Bool {
+        guard session.inputs.isEmpty else { return true }
+
+        guard let camera = device ?? AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: .back),
+              let input = try? AVCaptureDeviceInput(device: camera),
+              session.canAddInput(input) else { return false }
+
+        session.automaticallyConfiguresApplicationAudioSession = false
+        session.addInput(input)
+
+        let output = AVCaptureVideoDataOutput()
+        output.alwaysDiscardsLateVideoFrames = true
+        guard session.canAddOutput(output) else { return false }
+        session.addOutput(output)
+
+        prepareExposure(of: camera)
+        device = camera
+        return true
+    }
+
+    private func prepareExposure(of camera: AVCaptureDevice) {
+        guard (try? camera.lockForConfiguration()) != nil else { return }
+
+        if camera.isExposureModeSupported(.continuousAutoExposure) {
+            camera.exposureMode = .continuousAutoExposure
+        }
+        if camera.isFocusModeSupported(.continuousAutoFocus) {
+            camera.focusMode = .continuousAutoFocus
+        }
+        if camera.isAutoFocusRangeRestrictionSupported {
+            camera.autoFocusRangeRestriction = .none
+        }
+        camera.unlockForConfiguration()
+    }
+
+    private nonisolated static func discoverLenses() -> [CameraLens] {
+        let discovery = AVCaptureDevice.DiscoverySession(
+            deviceTypes: [.builtInUltraWideCamera, .builtInWideAngleCamera, .builtInTelephotoCamera],
+            mediaType: .video,
+            position: .back
+        )
+        let devices = discovery.devices
+        guard let wide = devices.first(where: { $0.deviceType == .builtInWideAngleCamera }) else { return [] }
+
+        let referenceFieldOfView = Double(wide.activeFormat.videoFieldOfView)
+
+        return devices.compactMap { camera in
+            let kind: CameraLens.Kind
+            switch camera.deviceType {
+            case .builtInUltraWideCamera: kind = .ultraWide
+            case .builtInTelephotoCamera: kind = .telephoto
+            default: kind = .wide
+            }
+
+            let factor = kind == .wide
+                ? 1
+                : CameraLens.zoomFactor(fieldOfView: Double(camera.activeFormat.videoFieldOfView), referenceFieldOfView: referenceFieldOfView)
+
+            guard let factor else { return nil }
+            return CameraLens(id: camera.uniqueID, kind: kind, zoomFactor: factor)
+        }
+        .sorted { $0.zoomFactor < $1.zoomFactor }
     }
 }

@@ -14,6 +14,7 @@ final class MeterViewModel {
     nonisolated static let compensationValues: [Double] = (-9...9).map { Double($0) / 3 }
     nonisolated static let outOfRangeThreshold: Double = 1
     nonisolated static let stabilizationThreshold: Double = 0.15
+    nonisolated static let lensSettleDelay: Duration = .milliseconds(300)
 
     var mode: ExposureMode
     var aperture: Double
@@ -23,8 +24,11 @@ final class MeterViewModel {
     private(set) var compensation: Double = 0
     private(set) var autoAperture: Double
     private(set) var isHeld = false
+    private(set) var selectedLens: CameraLens?
+    private(set) var isSwitchingLens = false
 
     private let sensor: any LightSensing
+    private let lensSettleDelay: Duration
     private var smoother: EVSmoother
     private var stabilizer = EVStabilizer(threshold: MeterViewModel.stabilizationThreshold)!
     private var task: Task<Void, Never>?
@@ -36,15 +40,20 @@ final class MeterViewModel {
          aperture: Double = 5.6,
          shutterSpeed: Double = 1.0 / 125,
          baseISO: Double = 100,
-         autoAperture: Double = 5.6) {
+         autoAperture: Double = 5.6,
+         lensSettleDelay: Duration = MeterViewModel.lensSettleDelay) {
         self.sensor = sensor
+        self.lensSettleDelay = lensSettleDelay
         self.smoother = smoother
         self.mode = mode
         self.aperture = aperture
         self.shutterSpeed = shutterSpeed
         self.baseISO = baseISO
         self.autoAperture = autoAperture
+        self.selectedLens = sensor.lenses.first { $0.kind == .wide } ?? sensor.lenses.first
     }
+
+    var lenses: [CameraLens] { sensor.lenses }
 
     var state: MeterState {
         guard let latest else { return .idle }
@@ -92,6 +101,24 @@ final class MeterViewModel {
         stabilizer.reset()
         latest = nil
         isHeld = false
+    }
+
+    func selectLens(_ lens: CameraLens) {
+        guard lenses.contains(lens), lens != selectedLens else { return }
+
+        selectedLens = lens
+        smoother.reset()
+        stabilizer.reset()
+
+        isSwitchingLens = true
+
+        let sensor = sensor
+        let delay = lensSettleDelay
+        Task {
+            await sensor.selectLens(lens)
+            try? await Task.sleep(for: delay)
+            isSwitchingLens = false
+        }
     }
 
     func toggleHold() {

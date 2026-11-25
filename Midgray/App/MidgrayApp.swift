@@ -27,9 +27,17 @@ struct MidgrayApp: App {
         }
     }
 
+    #if targetEnvironment(simulator)
+    private static let simulatedLenses = [
+        CameraLens(id: "ultraWide", kind: .ultraWide, zoomFactor: 0.5),
+        CameraLens(id: "wide", kind: .wide, zoomFactor: 1),
+        CameraLens(id: "telephoto", kind: .telephoto, zoomFactor: 3)
+    ]
+    #endif
+
     private static func makeSensor() -> (any LightSensing, AVCaptureSession?) {
         #if targetEnvironment(simulator)
-        (SimulatedLightSensor(offsets: [0, 0.3, 0.6, 0.3, 0, -0.3, -0.6, -0.3], interval: .milliseconds(400)), nil)
+        (SimulatedLightSensor(offsets: [0, 0.3, 0.6, 0.3, 0, -0.3, -0.6, -0.3], interval: .milliseconds(400), lenses: simulatedLenses), nil)
         #else
         let camera = MeterCamera()
         return (camera, camera.session)
