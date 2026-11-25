@@ -33,4 +33,12 @@ nonisolated enum ExposureScale {
 
         return scale.min { abs(log2($0 / value)) < abs(log2($1 / value)) }
     }
+
+    static func step(_ value: Double, by offset: Int, in scale: [Double]) -> Double? {
+        guard let current = nearest(to: value, in: scale),
+              let index = scale.firstIndex(of: current)
+        else { return nil }
+
+        return scale[min(max(index + offset, 0), scale.count - 1)]
+    }
 }

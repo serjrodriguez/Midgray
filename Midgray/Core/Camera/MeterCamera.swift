@@ -25,6 +25,7 @@ actor MeterCamera: LightSensing {
         }
         
         let session = AVCaptureSession()
+        session.automaticallyConfiguresApplicationAudioSession = false
         guard session.canAddInput(input) else {
             continuation.finish()
             return

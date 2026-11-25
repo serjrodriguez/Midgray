@@ -13,4 +13,6 @@ extension Color {
     static let meterResultFill = Color.white.opacity(0.92)
     static let meterResultText = Color(red: 18 / 255, green: 18 / 255, blue: 20 / 255)
     static let meterResultSecondaryText = Color.meterResultText.opacity(0.65)
+    static let meterWheelFill = Color(red: 0.14, green: 0.14, blue: 0.155)
+    static let meterWheelBand = Color.white.opacity(0.14)
 }

@@ -61,7 +61,7 @@ private struct OutOfRangeBadge: View {
             .foregroundStyle(.primary)
             .padding(.horizontal, Spacing.s16)
             .frame(minHeight: Spacing.s32)
-            .glassEffect(.regular.tint(.orange), in: .capsule)
+            .glassEffect(.regular.tint(.orange.opacity(0.35)), in: .capsule)
     }
 }
 
