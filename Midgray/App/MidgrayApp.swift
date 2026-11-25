@@ -6,14 +6,17 @@
 //
 
 import SwiftUI
+import SrdzPermissionsCamera
 
 @main
 struct MidgrayApp: App {
     @State private var viewModel = MeterViewModel(sensor: MidgrayApp.makeSensor(), smoother: EVSmoother()!)
 
+    @State private var permissions = CameraPermissionsViewModel(permission: CameraPermission.live)
+
     var body: some Scene {
         WindowGroup {
-            MeterView(viewModel: viewModel)
+            RootView(permissions: permissions, meter: viewModel)
         }
     }
 
