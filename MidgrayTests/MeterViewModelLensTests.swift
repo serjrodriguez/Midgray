@@ -92,6 +92,22 @@ struct MeterViewModelLensTests {
     }
 
     @Test
+    func anEarlierSwitchDoesNotReleaseTheFlagOfALaterOne() async throws {
+        let sensor = GatedLightSensor(lenses: [Self.ultraWide, Self.wide, Self.telephoto], heldLens: Self.telephoto)
+        let smoother = try #require(EVSmoother())
+        let viewModel = MeterViewModel(sensor: sensor, smoother: smoother, lensSettleDelay: .zero)
+
+        viewModel.selectLens(Self.ultraWide)
+        viewModel.selectLens(Self.telephoto)
+        for _ in 0..<200 { await Task.yield() }
+        #expect(viewModel.isSwitchingLens)
+
+        sensor.release()
+        let released = await waitUntil { !viewModel.isSwitchingLens }
+        #expect(released)
+    }
+
+    @Test
     func ignoredSelectionsDoNotRaiseTheSwitchingFlag() throws {
         let (viewModel, _) = try makeViewModel(lenses: [Self.wide])
         viewModel.selectLens(Self.wide)

@@ -37,7 +37,8 @@ final class MeterViewModel {
     private var smoother: EVSmoother
     private var stabilizer = EVStabilizer(threshold: MeterViewModel.stabilizationThreshold)!
     private var task: Task<Void, Never>?
-    private var latest: (ev: Double, offset: Double)?
+    private var lensTask: Task<Void, Never>?
+    private var latest: Sample?
     private var spotDevicePoint = MeterViewModel.center
 
     init(sensor: any LightSensing,
@@ -61,6 +62,8 @@ final class MeterViewModel {
 
     var lenses: [CameraLens] { sensor.lenses }
 
+    var hasReading: Bool { latest != nil }
+
     var state: MeterState {
         guard let latest else { return .idle }
 
@@ -73,7 +76,7 @@ final class MeterViewModel {
             equivalents: ExposureSuggestion.equivalents(ev100: compensatedEV, iso: baseISO)
         )
 
-        return abs(latest.offset) > Self.outOfRangeThreshold ? .outOfRange(readout) : .measuring(readout)
+        return latest.isOutOfRange ? .outOfRange(readout) : .measuring(readout)
     }
 
     func apply(_ settings: MeterSettings) {
@@ -104,7 +107,7 @@ final class MeterViewModel {
                       let smoothed = smoother.add(value),
                       let stable = stabilizer.add(smoothed) else { continue }
 
-                latest = (stable, reading.exposureTargetOffset)
+                publish(Sample(ev: stable, isOutOfRange: abs(reading.exposureTargetOffset) > Self.outOfRangeThreshold))
             }
         }
     }
@@ -132,10 +135,12 @@ final class MeterViewModel {
         let sensor = sensor
         let delay = lensSettleDelay
         let point = meteringPoint
-        Task {
+        lensTask?.cancel()
+        lensTask = Task {
             await sensor.selectLens(lens)
             await sensor.setMeteringPoint(point)
             try? await Task.sleep(for: delay)
+            guard !Task.isCancelled else { return }
             isSwitchingLens = false
         }
     }
@@ -176,6 +181,16 @@ final class MeterViewModel {
 }
 
 private extension MeterViewModel {
+    nonisolated struct Sample: Equatable {
+        let ev: Double
+        let isOutOfRange: Bool
+    }
+
+    func publish(_ sample: Sample) {
+        guard sample != latest else { return }
+        latest = sample
+    }
+
     var meteringPoint: CGPoint? {
         meteringMode == .spot ? spotDevicePoint : nil
     }

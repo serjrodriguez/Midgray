@@ -8,6 +8,7 @@
 import SwiftUI
 
 extension Color {
+    static let meterAccent = Color.blue
     static let meterInputFill = Color.white.opacity(0.08)
     static let meterInputBorder = Color.white.opacity(0.55)
     static let meterResultFill = Color.white.opacity(0.92)
