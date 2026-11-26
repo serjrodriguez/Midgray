@@ -7,6 +7,11 @@
 
 import Foundation
 
+nonisolated struct ExposureStop: Equatable, Sendable {
+    let nominal: Double
+    let exact: Double
+}
+
 nonisolated enum ExposureScale {
     static let apertures: [Double] = [
         1.0, 1.1, 1.2, 1.4, 1.6, 1.8, 2.0, 2.2, 2.5, 2.8, 3.2, 3.5, 4.0, 4.5, 5.0,
@@ -27,6 +32,32 @@ nonisolated enum ExposureScale {
         50, 64, 80, 100, 125, 160, 200, 250, 320, 400, 500, 640, 800, 1000,
         1250, 1600, 2000, 2500, 3200, 4000, 5000, 6400, 8000, 10000, 12800
     ]
+
+    static let apertureStops = stops(apertures, reference: 1, stepsPerDoubling: 6)
+    static let shutterStops = stops(shutterSpeeds, reference: 1, stepsPerDoubling: 3)
+    static let isoStops = stops(isoValues, reference: 100, stepsPerDoubling: 3)
+
+    private static let tieTolerance = 1e-9
+
+    static func stop(labelled value: Double, in stops: [ExposureStop]) -> ExposureStop? {
+        guard value > 0 else { return nil }
+
+        return stops.min { abs(log2($0.nominal / value)) < abs(log2($1.nominal / value)) }
+    }
+
+    static func stop(closestTo value: Double, in stops: [ExposureStop]) -> ExposureStop? {
+        guard value > 0 else { return nil }
+
+        return stops.min { abs(log2($0.exact / value)) < abs(log2($1.exact / value)) - tieTolerance }
+    }
+
+    private static func stops(_ labels: [Double], reference: Double, stepsPerDoubling: Double) -> [ExposureStop] {
+        guard let origin = labels.firstIndex(of: reference) else { return [] }
+
+        return labels.enumerated().map { index, label in
+            ExposureStop(nominal: label, exact: reference * exp2(Double(index - origin) / stepsPerDoubling))
+        }
+    }
 
     static func nearest(to value: Double, in scale: [Double]) -> Double? {
         guard value > 0 else { return nil }

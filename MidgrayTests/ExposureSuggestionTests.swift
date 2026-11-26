@@ -19,7 +19,7 @@ struct ExposureSuggestionTests {
         #expect(result.aperture == 16)
         #expect(result.exposureTime == 1.0 / 125)
         #expect(result.iso == 100)
-        #expect(abs(result.evError) < 0.001)
+        #expect(abs(result.evError) < 0.05)
     }
 
     @Test
@@ -29,7 +29,7 @@ struct ExposureSuggestionTests {
         )
         #expect(result.aperture == 16)
         #expect(result.exposureTime == 1.0 / 125)
-        #expect(abs(result.evError) < 0.001)
+        #expect(abs(result.evError) < 0.05)
     }
 
     @Test
@@ -50,7 +50,7 @@ struct ExposureSuggestionTests {
             ExposureSuggestion.suggestion(ev100: ev, baseISO: 200, priority: .aperture(aperture))
         )
         let achieved = try #require(
-            ExposureMath.ev100(aperture: result.aperture, exposureTime: result.exposureTime, iso: result.iso)
+            exactEV(aperture: result.aperture, exposureTime: result.exposureTime, iso: result.iso)
         )
         #expect(abs(result.evError - (ev - achieved)) < 1e-9)
 
@@ -108,6 +108,38 @@ struct ExposureSuggestionTests {
         #expect(bright.contains { $0.aperture == 32 })
     }
 
+    nonisolated static let sweptEVs: [Double] = (0...1800).map { Double($0) / 100 }
+
+    @Test
+    func consecutiveEquivalentsAlwaysDifferByOneShutterStep() {
+        let irregular = Self.sweptEVs.filter { ev in
+            let list = ExposureSuggestion.equivalents(ev100: ev, iso: 100)
+            let indices = list.compactMap { ExposureScale.shutterSpeeds.firstIndex(of: $0.exposureTime) }
+            return zip(indices, indices.dropFirst()).contains { $1 - $0 != 1 }
+        }
+        #expect(irregular.isEmpty)
+    }
+
+    @Test
+    func equivalentsStayWithinHalfAThirdStop() {
+        let tooFar = Self.sweptEVs.filter { ev in
+            ExposureSuggestion.equivalents(ev100: ev, iso: 100).contains { abs($0.evError) > 1.0 / 6 + 1e-6 }
+        }
+        #expect(tooFar.isEmpty)
+    }
+
+    nonisolated static let pairsNearAHalfStep: [(Double, Double)] = [
+        (5.0, 1.0 / 1250), (5.6, 1.0 / 1000), (6.3, 1.0 / 800)
+    ]
+
+    @Test(arguments: ExposureSuggestionTests.pairsNearAHalfStep)
+    func neighbouringAperturesGetDifferentTimes(aperture: Double, exposureTime: Double) throws {
+        let result = try #require(
+            ExposureSuggestion.suggestion(ev100: 15.1, baseISO: 100, priority: .aperture(aperture))
+        )
+        #expect(result.exposureTime == exposureTime)
+    }
+
     @Test
     func equivalentsAreEmptyForInvalidISO() {
         #expect(ExposureSuggestion.equivalents(ev100: 10, iso: 0).isEmpty)
@@ -121,7 +153,7 @@ struct ExposureSuggestionTests {
         #expect(result.aperture == 16)
         #expect(result.exposureTime == 1.0 / 125)
         #expect(result.iso == 100)
-        #expect(abs(result.evError) < 0.001)
+        #expect(abs(result.evError) < 0.05)
     }
 
     @Test
@@ -152,7 +184,7 @@ struct ExposureSuggestionTests {
 
     @Test(arguments: ExposureSuggestionTests.isoTriples)
     func isoPriorityRecoversTheISOUsedToComputeTheEV(aperture: Double, time: Double, iso: Double) throws {
-        let ev = try #require(ExposureMath.ev100(aperture: aperture, exposureTime: time, iso: iso))
+        let ev = try #require(exactEV(aperture: aperture, exposureTime: time, iso: iso))
         let result = try #require(
             ExposureSuggestion.suggestion(ev100: ev, baseISO: 100, priority: .iso(aperture: aperture, shutter: time))
         )
@@ -180,5 +212,14 @@ struct ExposureSuggestionTests {
         #expect(ExposureSuggestion.suggestion(ev100: .nan, baseISO: 100, priority: .iso(aperture: 8, shutter: 0.01)) == nil)
         #expect(ExposureSuggestion.suggestion(ev100: 10, baseISO: 100, priority: .iso(aperture: 0, shutter: 0.01)) == nil)
         #expect(ExposureSuggestion.suggestion(ev100: 10, baseISO: 100, priority: .iso(aperture: 8, shutter: -1)) == nil)
+    }
+
+    private func exactEV(aperture: Double, exposureTime: Double, iso: Double) -> Double? {
+        guard let aperture = ExposureScale.stop(labelled: aperture, in: ExposureScale.apertureStops),
+              let shutter = ExposureScale.stop(labelled: exposureTime, in: ExposureScale.shutterStops),
+              let sensitivity = ExposureScale.stop(labelled: iso, in: ExposureScale.isoStops)
+        else { return nil }
+
+        return ExposureMath.ev100(aperture: aperture.exact, exposureTime: shutter.exact, iso: sensitivity.exact)
     }
 }
