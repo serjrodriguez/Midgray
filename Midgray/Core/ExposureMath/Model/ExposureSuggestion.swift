@@ -19,47 +19,49 @@ nonisolated struct ExposureSuggestion: Equatable {
     let iso: Double
     let evError: Double
 
+    static let equivalentEVErrors: Range<Double> = (-1.0 / 6 - 1e-6)..<(1.0 / 6 - 1e-6)
+
     static func suggestion(ev100: Double, baseISO: Double, priority: ExposurePriority) -> ExposureSuggestion? {
         switch priority {
         case .aperture(let aperture):
-            guard let roundedISO = ExposureScale.nearest(to: baseISO, in: ExposureScale.isoValues),
-                  let roundedAperture = ExposureScale.nearest(to: aperture, in: ExposureScale.apertures),
-                  let exposureTime = ExposureMath.exposureTime(ev100: ev100, aperture: roundedAperture, iso: roundedISO),
-                  let roundedTime = ExposureScale.nearest(to: exposureTime, in: ExposureScale.shutterSpeeds)
+            guard let iso = ExposureScale.stop(labelled: baseISO, in: ExposureScale.isoStops),
+                  let aperture = ExposureScale.stop(labelled: aperture, in: ExposureScale.apertureStops),
+                  let time = ExposureMath.exposureTime(ev100: ev100, aperture: aperture.exact, iso: iso.exact),
+                  let shutter = ExposureScale.stop(closestTo: time, in: ExposureScale.shutterStops)
             else { return nil }
 
-            return make(ev100: ev100, aperture: roundedAperture, exposureTime: roundedTime, iso: roundedISO)
+            return make(ev100: ev100, aperture: aperture, shutter: shutter, iso: iso)
 
         case .shutter(let shutterSpeed):
-            guard let roundedISO = ExposureScale.nearest(to: baseISO, in: ExposureScale.isoValues),
-                  let roundedTime = ExposureScale.nearest(to: shutterSpeed, in: ExposureScale.shutterSpeeds),
-                  let aperture = ExposureMath.aperture(ev100: ev100, exposureTime: roundedTime, iso: roundedISO),
-                  let roundedAperture = ExposureScale.nearest(to: aperture, in: ExposureScale.apertures)
+            guard let iso = ExposureScale.stop(labelled: baseISO, in: ExposureScale.isoStops),
+                  let shutter = ExposureScale.stop(labelled: shutterSpeed, in: ExposureScale.shutterStops),
+                  let fNumber = ExposureMath.aperture(ev100: ev100, exposureTime: shutter.exact, iso: iso.exact),
+                  let aperture = ExposureScale.stop(closestTo: fNumber, in: ExposureScale.apertureStops)
             else { return nil }
 
-            return make(ev100: ev100, aperture: roundedAperture, exposureTime: roundedTime, iso: roundedISO)
+            return make(ev100: ev100, aperture: aperture, shutter: shutter, iso: iso)
 
         case .iso(let aperture, let shutterSpeed):
-            guard let roundedAperture = ExposureScale.nearest(to: aperture, in: ExposureScale.apertures),
-                  let roundedTime = ExposureScale.nearest(to: shutterSpeed, in: ExposureScale.shutterSpeeds),
-                  let iso = ExposureMath.iso(ev100: ev100, aperture: roundedAperture, exposureTime: roundedTime),
-                  let roundedISO = ExposureScale.nearest(to: iso, in: ExposureScale.isoValues)
+            guard let aperture = ExposureScale.stop(labelled: aperture, in: ExposureScale.apertureStops),
+                  let shutter = ExposureScale.stop(labelled: shutterSpeed, in: ExposureScale.shutterStops),
+                  let sensitivity = ExposureMath.iso(ev100: ev100, aperture: aperture.exact, exposureTime: shutter.exact),
+                  let iso = ExposureScale.stop(closestTo: sensitivity, in: ExposureScale.isoStops)
             else { return nil }
 
-            return make(ev100: ev100, aperture: roundedAperture, exposureTime: roundedTime, iso: roundedISO)
+            return make(ev100: ev100, aperture: aperture, shutter: shutter, iso: iso)
         }
     }
 
-    static func equivalents(ev100: Double, iso: Double, maximumEVError: Double = 0.5) -> [ExposureSuggestion] {
+    static func equivalents(ev100: Double, iso: Double) -> [ExposureSuggestion] {
         ExposureScale.apertures.compactMap { aperture in
             suggestion(ev100: ev100, baseISO: iso, priority: .aperture(aperture))
         }
-        .filter { abs($0.evError) <= maximumEVError }
+        .filter { equivalentEVErrors.contains($0.evError) }
     }
 
-    private static func make(ev100: Double, aperture: Double, exposureTime: Double, iso: Double) -> ExposureSuggestion? {
-        guard let achievedEV = ExposureMath.ev100(aperture: aperture, exposureTime: exposureTime, iso: iso) else { return nil }
+    private static func make(ev100: Double, aperture: ExposureStop, shutter: ExposureStop, iso: ExposureStop) -> ExposureSuggestion? {
+        guard let achievedEV = ExposureMath.ev100(aperture: aperture.exact, exposureTime: shutter.exact, iso: iso.exact) else { return nil }
 
-        return ExposureSuggestion(aperture: aperture, exposureTime: exposureTime, iso: iso, evError: ev100 - achievedEV)
+        return ExposureSuggestion(aperture: aperture.nominal, exposureTime: shutter.nominal, iso: iso.nominal, evError: ev100 - achievedEV)
     }
 }
