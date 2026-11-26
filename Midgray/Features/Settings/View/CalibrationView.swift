@@ -9,6 +9,7 @@ import SwiftUI
 
 struct CalibrationView: View {
     @Bindable var viewModel: SettingsViewModel
+    @ScaledMetric(relativeTo: .largeTitle) private var valueSize: CGFloat = 40
 
     var body: some View {
         ScrollView {
@@ -19,7 +20,7 @@ struct CalibrationView: View {
 
                 card
 
-                PrimaryActionButton(title: "Reset to 0.0 EV", isProminent: false, action: viewModel.resetCalibration)
+                PrimaryActionButton(title: "Reset to \(ExposureFormatter.compensation(0))", isProminent: false, action: viewModel.resetCalibration)
                     .disabled(!viewModel.canResetCalibration)
                     .opacity(viewModel.canResetCalibration ? 1 : 0.6)
 
@@ -38,21 +39,14 @@ struct CalibrationView: View {
 
     private var card: some View {
         VStack(spacing: Spacing.s12) {
-            Text(ExposureFormatter.compensation(viewModel.calibration))
-                .font(.system(size: 40, weight: .bold))
-                .monospacedDigit()
-                .contentTransition(.numericText())
-                .animation(.snappy, value: viewModel.calibration)
-
-            Text("Current adjustment")
-                .font(.subheadline)
-                .foregroundStyle(.secondary)
+            readout
 
             HStack(spacing: 0) {
                 stepButton(symbol: "minus", label: "Decrease adjustment", steps: -1, isEnabled: viewModel.canDecreaseCalibration)
 
                 Divider()
                     .frame(height: Spacing.s20)
+                    .accessibilityHidden(true)
 
                 stepButton(symbol: "plus", label: "Increase adjustment", steps: 1, isEnabled: viewModel.canIncreaseCalibration)
             }
@@ -61,7 +55,22 @@ struct CalibrationView: View {
         .frame(maxWidth: .infinity)
         .padding(.vertical, Spacing.s28)
         .background(Color.meterWheelFill, in: RoundedRectangle(cornerRadius: Radius.r26))
-        .accessibilityElement(children: .contain)
+    }
+
+    private var readout: some View {
+        VStack(spacing: Spacing.s12) {
+            Text(ExposureFormatter.compensation(viewModel.calibration))
+                .font(.system(size: valueSize, weight: .bold))
+                .monospacedDigit()
+                .contentTransition(.numericText())
+                .animation(.snappy, value: viewModel.calibration)
+
+            Text("Current adjustment")
+                .font(.subheadline)
+                .foregroundStyle(.secondary)
+        }
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel("Current adjustment")
         .accessibilityValue(ExposureFormatter.compensation(viewModel.calibration))
         .accessibilityAdjustableAction { direction in
             switch direction {

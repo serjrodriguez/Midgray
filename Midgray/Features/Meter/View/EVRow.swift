@@ -25,6 +25,8 @@ struct EVRow: View {
             Text(ExposureFormatter.compensation(compensation))
                 .font(.caption)
                 .foregroundStyle(.secondary)
+                .accessibilityLabel("Exposure compensation")
+                .accessibilityValue(ExposureFormatter.compensation(compensation))
         }
     }
 }

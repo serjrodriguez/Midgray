@@ -11,6 +11,7 @@ import AVFoundation
 struct MeterView: View {
     @State private var viewModel: MeterViewModel
     @State private var settingsViewModel: SettingsViewModel?
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
     private let previewSession: AVCaptureSession?
     private let settings: any SettingsRepository
 
@@ -135,7 +136,15 @@ struct MeterView: View {
                 OutOfRangeBadge()
             }
 
-            MeterPanel(viewModel: viewModel, readout: readout)
+            if dynamicTypeSize.isAccessibilitySize {
+                ScrollView {
+                    MeterPanel(viewModel: viewModel, readout: readout)
+                }
+                .scrollBounceBehavior(.basedOnSize)
+                .defaultScrollAnchor(.bottom)
+            } else {
+                MeterPanel(viewModel: viewModel, readout: readout)
+            }
         }
         .padding(.horizontal, Spacing.s12)
         .padding(.bottom, Spacing.s8)
@@ -151,6 +160,9 @@ private struct OutOfRangeBadge: View {
             .padding(.horizontal, Spacing.s16)
             .frame(minHeight: Spacing.s32)
             .glassEffect(.regular.tint(.orange.opacity(0.35)), in: .capsule)
+            .onAppear {
+                AccessibilityNotification.Announcement(String(localized: "Out of range")).post()
+            }
     }
 }
 

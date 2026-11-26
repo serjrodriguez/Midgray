@@ -111,21 +111,28 @@ private struct SettingsRow: View {
     let symbol: String
     var showsChevron = false
 
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
+
     var body: some View {
         HStack(spacing: Spacing.s8) {
-            Text(title)
+            if dynamicTypeSize.isAccessibilitySize {
+                VStack(alignment: .leading, spacing: Spacing.s4) {
+                    Text(title)
+                    valueText
+                }
 
-            Spacer(minLength: Spacing.s8)
+                Spacer(minLength: Spacing.s8)
+            } else {
+                Text(title)
 
-            if let value {
-                Text(value)
-                    .foregroundStyle(.secondary)
-                    .monospacedDigit()
+                Spacer(minLength: Spacing.s8)
+
+                valueText
+
+                Image(systemName: symbol)
+                    .foregroundStyle(Color.accentColor)
+                    .accessibilityHidden(true)
             }
-
-            Image(systemName: symbol)
-                .foregroundStyle(Color.accentColor)
-                .accessibilityHidden(true)
 
             if showsChevron {
                 Image(systemName: "chevron.right")
@@ -135,6 +142,15 @@ private struct SettingsRow: View {
             }
         }
         .contentShape(Rectangle())
+    }
+
+    @ViewBuilder
+    private var valueText: some View {
+        if let value {
+            Text(value)
+                .foregroundStyle(.secondary)
+                .monospacedDigit()
+        }
     }
 }
 
