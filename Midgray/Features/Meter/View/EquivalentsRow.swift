@@ -12,14 +12,13 @@ struct EquivalentsRow: View {
     let selectedAperture: Double?
     let ev: Double
     var showsHeader = true
+    var headerHasBackground = false
     let onSelect: (Double) -> Void
 
     var body: some View {
         VStack(alignment: .leading, spacing: Spacing.s8) {
             if showsHeader {
-                Text("Equivalent exposures for \(ExposureFormatter.ev(ev))")
-                    .font(.caption2)
-                    .foregroundStyle(.secondary)
+                header
             }
 
             ScrollViewReader { proxy in
@@ -58,6 +57,24 @@ struct EquivalentsRow: View {
 }
 
 private extension EquivalentsRow {
+    @ViewBuilder
+    var header: some View {
+        let title = Text("Equivalent exposures for \(ExposureFormatter.ev(ev))")
+            .font(.caption2)
+
+        if headerHasBackground {
+            title
+                .fontWeight(.semibold)
+                .foregroundStyle(.primary)
+                .padding(.horizontal, Spacing.s12)
+                .padding(.vertical, Spacing.s8)
+                .glassEffect(.regular, in: .capsule)
+        } else {
+            title
+                .foregroundStyle(.secondary)
+        }
+    }
+
     var edgeFade: some View {
         HStack(spacing: 0) {
             LinearGradient(colors: [.clear, .black], startPoint: .leading, endPoint: .trailing)
