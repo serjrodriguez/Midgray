@@ -17,11 +17,12 @@ Desde el Medidor:
 
 ## Inventario de pantallas
 
-1. Onboarding: qué mide, cómo leer el resultado, modos de medición, calibración. Última página: permiso.
-2. Permiso denegado o restringido: explica y lleva a Ajustes del sistema.
-3. Medidor (principal): vista previa a pantalla completa y, sobre ella, el panel de vidrio con el modo de exposición (Auto, Apertura, Velocidad, ISO), los tres valores, el EV y "Medir". Las herramientas (Ajustes, lente, tipo de medición promedio o puntual y compensación de EV) son elementos de la barra de herramientas del sistema (`ToolbarItem`), iguales en todos los dispositivos: en iPhone van en la barra superior y en iPhone Duo el sistema las coloca en la barra vertical.
-4. Ajustes: calibración (±EV), ver tutorial, acerca de, privacidad.
-5. Calibración: ajuste manual con explicación breve.
+1. Onboarding: qué mide, modos de exposición, medición promedio o puntual y, la primera vez, una última página que pide el permiso de cámara. Se puede volver a ver desde Ajustes (sin la página del permiso).
+2. Permiso de cámara (sin decidir, denegado o restringido): explica y, según el caso, pide el permiso o lleva a Ajustes del sistema. Mientras no se conoce el estado solo se ve el fondo negro.
+3. Medidor (principal): vista previa a pantalla completa y, sobre ella, el panel de vidrio con el modo de exposición (Auto, Apertura, Velocidad, ISO), las exposiciones equivalentes (en Auto), los tres valores, el EV y "Medir". Las herramientas (Ajustes, lente, tipo de medición y compensación de EV) son elementos de la barra de herramientas del sistema: en iPhone van en la barra superior y en iPhone Duo el sistema las coloca en la barra vertical.
+4. Cámara no disponible: si la cámara no se puede iniciar, el Medidor explica el problema y ofrece Reintentar.
+5. Ajustes: Medición (calibración y lente predeterminada), Ayuda (ver tutorial y cómo leer la medición) y Acerca de (privacidad y versión).
+6. Calibración: ajuste manual de −2 a +2 EV en pasos de 0,1, con explicación breve.
 
 ## Modelo de interacción del Medidor (decidido)
 
@@ -36,8 +37,8 @@ Desde el Medidor:
 | Velocidad (S) | Velocidad e ISO | Apertura |
 | ISO | Apertura y velocidad | ISO necesario |
 
-- En Auto el usuario puede tocar una fila de la lista de equivalentes para pasar a ese par.
-- Los valores que fija el usuario se ven como controles (se tocan y abren una rueda nativa). El valor calculado se ve distinto (solo lectura, más grande).
+- En Auto el usuario puede tocar uno de los chips de exposiciones equivalentes para pasar a ese par.
+- Los valores que fija el usuario se ven como controles: al tocarlos o deslizar sobre ellos se expanden en una rueda propia (`ValueWheel`) que se cierra sola. El valor calculado se ve distinto (solo lectura, fondo claro).
 - Lectura en vivo con suavizado. El botón **Medir** retiene la lectura; un segundo toque vuelve a lectura en vivo.
 - Modo **Promedio** o **Puntual**. En puntual, un toque en la vista previa coloca el retículo.
 
@@ -46,12 +47,12 @@ Desde el Medidor:
 - Poca luz extrema o lectura fuera de rango.
 - Sobreexposición.
 - Lectura inestable.
-- Sin cámara disponible.
+- La cámara no se puede iniciar.
 - Permiso cambiado mientras la app estaba abierta.
 
 ## Orientación
 
-- Vertical y horizontal desde v1.0. El Medidor está diseñado en ambas.
+- Vertical y horizontal desde v1.0. En horizontal el panel va a la derecha con los valores en filas y las equivalentes abajo a la izquierda; el tutorial pone la ilustración junto al texto.
 
 ## Adaptación a iPhone Duo
 
@@ -61,4 +62,4 @@ Desde el Medidor:
 
 ## Compensación de EV
 
-- El botón `±` de la barra abre un popover con el stepper de compensación (paso de 1/3 EV). El panel solo muestra el valor actual. Falta dibujar este popover.
+- El botón `±` de la barra abre un popover con una rueda de compensación (de −3 a +3 EV en pasos de 1/3). Cuando no es cero, el botón muestra el valor; el panel también lo muestra.
