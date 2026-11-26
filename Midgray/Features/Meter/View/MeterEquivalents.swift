@@ -18,6 +18,7 @@ struct MeterEquivalents: View {
                 selectedAperture: readout.suggestion?.aperture,
                 ev: readout.compensatedEV,
                 showsHeader: showsHeader,
+                headerHasBackground: true,
                 onSelect: viewModel.selectAutoAperture
             )
         }
