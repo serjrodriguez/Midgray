@@ -16,7 +16,11 @@ struct MeterViewfinder: View {
         GeometryReader { geometry in
             ZStack {
                 if let previewSession {
-                    CameraPreview(session: previewSession, onTap: handleSpotTap)
+                    CameraPreview(
+                        session: previewSession,
+                        configuration: "\(viewModel.selectedLens?.id ?? "")-\(viewModel.isSwitchingLens)-\(viewModel.hasReading)",
+                        onTap: handleSpotTap
+                    )
                         .opacity(viewModel.isSwitchingLens ? 0 : 1)
                         .animation(.easeInOut(duration: 0.2), value: viewModel.isSwitchingLens)
                 } else {
@@ -33,6 +37,9 @@ struct MeterViewfinder: View {
                         .position(x: viewModel.spot.x * geometry.size.width, y: viewModel.spot.y * geometry.size.height)
                         .animation(.snappy, value: viewModel.spot)
                 }
+            }
+            .onChange(of: geometry.size) {
+                viewModel.resetSpot()
             }
         }
         .ignoresSafeArea()

@@ -11,13 +11,16 @@ struct EquivalentsRow: View {
     let equivalents: [ExposureSuggestion]
     let selectedAperture: Double?
     let ev: Double
+    var showsHeader = true
     let onSelect: (Double) -> Void
 
     var body: some View {
         VStack(alignment: .leading, spacing: Spacing.s8) {
-            Text("Equivalent exposures for \(ExposureFormatter.ev(ev))")
-                .font(.caption2)
-                .foregroundStyle(.secondary)
+            if showsHeader {
+                Text("Equivalent exposures for \(ExposureFormatter.ev(ev))")
+                    .font(.caption2)
+                    .foregroundStyle(.secondary)
+            }
 
             ScrollViewReader { proxy in
                 ScrollView(.horizontal) {

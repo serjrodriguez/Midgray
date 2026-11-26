@@ -167,6 +167,17 @@ final class MeterViewModel {
         sendMeteringPoint()
     }
 
+    func resetSpot() {
+        guard spot != Self.center || spotDevicePoint != Self.center else { return }
+
+        spot = Self.center
+        spotDevicePoint = Self.center
+
+        guard meteringMode == .spot else { return }
+        restartSignal()
+        sendMeteringPoint()
+    }
+
     func toggleHold() {
         if isHeld {
             isHeld = false
