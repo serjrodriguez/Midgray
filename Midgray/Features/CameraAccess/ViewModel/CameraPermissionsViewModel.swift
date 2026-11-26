@@ -11,7 +11,7 @@ import SrdzPermissionsCore
 
 @Observable
 final class CameraPermissionsViewModel {
-    private(set) var access: CameraAccess = .undetermined
+    private(set) var access: CameraAccess?
     private let permission: any PermissionProviding
     
     init(permission: any PermissionProviding) {
