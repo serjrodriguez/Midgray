@@ -17,12 +17,13 @@ struct ValueCellsRow: View {
     @State private var editing: ExposureSetting?
     @State private var isInteracting = false
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
+    @Environment(\.usesCompactValues) private var usesCompactValues
 
     nonisolated static let autoCloseDelay: Duration = .seconds(2)
     private static let placeholder = "—"
 
     private var layout: AnyLayout {
-        dynamicTypeSize.isAccessibilitySize
+        dynamicTypeSize.isAccessibilitySize || usesCompactValues
             ? AnyLayout(VStackLayout(spacing: Spacing.s8))
             : AnyLayout(HStackLayout(spacing: Spacing.s8))
     }

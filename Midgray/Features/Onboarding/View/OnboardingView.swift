@@ -10,6 +10,7 @@ import SwiftUI
 struct OnboardingView: View {
     @Bindable var viewModel: OnboardingViewModel
     @Environment(\.dismiss) private var dismiss
+    @Environment(\.verticalSizeClass) private var verticalSizeClass
 
     var body: some View {
         VStack(spacing: 0) {
@@ -24,11 +25,11 @@ struct OnboardingView: View {
             .tabViewStyle(.page(indexDisplayMode: .never))
 
             PageDots(count: viewModel.pages.count, current: viewModel.index)
-                .padding(.bottom, Spacing.s28)
+                .padding(.bottom, verticalSizeClass == .compact ? Spacing.s8 : Spacing.s28)
 
             actions
                 .padding(.horizontal, Spacing.s24)
-                .padding(.bottom, Spacing.s16)
+                .padding(.bottom, verticalSizeClass == .compact ? Spacing.s4 : Spacing.s16)
         }
         .background(Color.black.ignoresSafeArea())
         .animation(.snappy, value: viewModel.index)
@@ -68,7 +69,9 @@ struct OnboardingView: View {
                     viewModel.next()
                 }
 
-                Color.clear.frame(height: Spacing.s36)
+                if verticalSizeClass != .compact {
+                    Color.clear.frame(height: Spacing.s36)
+                }
             }
         }
     }
@@ -76,6 +79,7 @@ struct OnboardingView: View {
 
 private struct OnboardingPageView: View {
     let page: OnboardingPage
+    @Environment(\.verticalSizeClass) private var verticalSizeClass
 
     var body: some View {
         GeometryReader { geometry in
@@ -91,29 +95,46 @@ private struct OnboardingPageView: View {
         VStack(spacing: Spacing.s24) {
             Spacer()
 
-            Image(systemName: page.symbol)
-                .font(.system(size: 56))
-                .foregroundStyle(Color.accentColor)
-                .frame(width: 140, height: 140)
-                .background(Color.meterWheelFill, in: RoundedRectangle(cornerRadius: Radius.r36))
-                .accessibilityHidden(true)
-
-            VStack(spacing: Spacing.s12) {
-                Text(page.title)
-                    .font(.title.bold())
-                    .multilineTextAlignment(.center)
-                    .accessibilityAddTraits(.isHeader)
-
-                Text(page.message)
-                    .font(.subheadline)
-                    .foregroundStyle(.secondary)
-                    .multilineTextAlignment(.center)
+            if verticalSizeClass == .compact {
+                HStack(spacing: Spacing.s24) {
+                    illustration
+                    texts
+                }
+            } else {
+                illustration
+                texts
             }
 
             Spacer()
-            Spacer()
+
+            if verticalSizeClass != .compact {
+                Spacer()
+            }
         }
         .padding(.horizontal, Spacing.s36)
+    }
+
+    private var illustration: some View {
+        Image(systemName: page.symbol)
+            .font(.system(size: 56))
+            .foregroundStyle(Color.accentColor)
+            .frame(width: 140, height: 140)
+            .background(Color.meterWheelFill, in: RoundedRectangle(cornerRadius: Radius.r36))
+            .accessibilityHidden(true)
+    }
+
+    private var texts: some View {
+        VStack(spacing: Spacing.s12) {
+            Text(page.title)
+                .font(.title.bold())
+                .multilineTextAlignment(.center)
+                .accessibilityAddTraits(.isHeader)
+
+            Text(page.message)
+                .font(.subheadline)
+                .foregroundStyle(.secondary)
+                .multilineTextAlignment(.center)
+        }
     }
 }
 

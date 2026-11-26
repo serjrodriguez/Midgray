@@ -11,8 +11,12 @@ import AVFoundation
 struct MeterView: View {
     @State private var viewModel: MeterViewModel
     @State private var settingsViewModel: SettingsViewModel?
+    @State private var containerSize = CGSize.zero
+    @State private var controlsSize = CGSize.zero
     private let previewSession: AVCaptureSession?
     private let settings: any SettingsRepository
+
+    private static let maximumHeightForEquivalentsHeader: CGFloat = 360
 
     init(viewModel: MeterViewModel,
          previewSession: AVCaptureSession? = nil,
@@ -45,6 +49,14 @@ struct MeterView: View {
             .accessibilityLabel("Settings")
         }
 
+        if #available(iOS 27.1, *) {
+            actions.axisBehavior(.verticalPreferred)
+        } else {
+            actions
+        }
+    }
+
+    private var actions: some ToolbarContent {
         ToolbarItemGroup(placement: .topBarTrailing) {
             if viewModel.lenses.count > 1 {
                 LensButton(
@@ -77,9 +89,59 @@ struct MeterView: View {
         ZStack {
             Color.black.ignoresSafeArea()
 
-            MeterViewfinder(viewModel: viewModel, previewSession: previewSession)
+            arrangement
+                .onGeometryChange(for: CGSize.self) { geometry in
+                    geometry.size
+                } action: { size in
+                    containerSize = size
+                }
+        }
+    }
 
-            MeterReadoutOverlay(viewModel: viewModel)
+    @ViewBuilder
+    private var arrangement: some View {
+        if #available(iOS 27.1, *) {
+            ArrangementView {
+                controls
+                    .overlayArrangementEdge(HorizontalEdge.trailing)
+                    .overlayArrangementEdge(VerticalEdge.bottom)
+            } secondary: {
+                viewfinder
+            }
+            .arrangementViewStyle(.overlay)
+        } else {
+            ZStack {
+                viewfinder
+                controls
+            }
+        }
+    }
+
+    private var layout: MeterLayout {
+        MeterLayout(size: controlsSize, container: containerSize)
+    }
+
+    private var viewfinder: some View {
+        MeterViewfinder(viewModel: viewModel, previewSession: previewSession)
+            .overlay(alignment: .bottomLeading) {
+                if layout == .trailingHalf {
+                    MeterEquivalents(viewModel: viewModel, showsHeader: false)
+                        .padding(.horizontal, Spacing.s24)
+                        .padding(.bottom, Spacing.s16)
+                }
+            }
+    }
+
+    private var controls: some View {
+        MeterReadoutOverlay(
+            viewModel: viewModel,
+            layout: layout,
+            showsEquivalentsHeader: controlsSize.height < Self.maximumHeightForEquivalentsHeader
+        )
+        .onGeometryChange(for: CGSize.self) { geometry in
+            geometry.size
+        } action: { size in
+            controlsSize = size
         }
     }
 }
