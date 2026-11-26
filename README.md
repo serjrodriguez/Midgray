@@ -14,14 +14,15 @@ Midgray uses the rear camera to measure the light of a scene and suggests the ex
 - Lens picker and manual calibration
 - First-launch onboarding, replayable from Settings
 - Spanish and English, dark interface, Dynamic Type and VoiceOver labels
+- Portrait and landscape
+- Layouts for the foldable iPhone Duo, including both partly folded poses (iOS 27.1+)
 - Liquid Glass interface with native components and system toolbar actions
 - No accounts, no analytics, no data collection
 
 ## Still to do before v1.0
 
 - Validate the readings against a reference meter or camera
-- Landscape layout
-- Layouts that adapt to the foldable iPhone Duo
+- Try the iPhone Duo layouts on real hardware (they have only run in the simulator)
 - App Store listing and TestFlight
 
 ## Tech
@@ -42,6 +43,7 @@ Midgray/
   Resources/
 MidgrayTests/
 Design/       design notes and icon layers
+docs/         privacy policy and support pages
 ```
 
 ## Running

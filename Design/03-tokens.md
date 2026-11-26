@@ -4,45 +4,37 @@ Fuente: archivo de Figma privado "Midgray - Wireframes", página "Diseño UI", s
 
 ## Color
 
-Principio: usar colores semánticos del sistema y solo añadir los propios del Medidor, que vive sobre la cámara y siempre se ve oscuro.
-
-| Token | SwiftUI | Uso |
-|---|---|---|
-| Backgrounds/Primary | `Color(.systemBackground)` | Fondo de onboarding y permiso denegado |
-| Grouped/Primary | `Color(.systemGroupedBackground)` | Fondo de Ajustes y Calibración |
-| Grouped/Secondary | `Color(.secondarySystemGroupedBackground)` | Tarjetas y filas agrupadas |
-| Backgrounds/Secondary | `Color(.secondarySystemBackground)` | Tarjeta de ilustración |
-| Accents/Blue | tint de la app | Acciones principales, símbolos |
-| Labels/Primary | `.primary` | Texto principal |
-| Labels/Secondary | `.secondary` | Texto de apoyo |
-
-Propios de Midgray (Medidor):
+La interfaz es siempre oscura, porque el Medidor vive sobre la cámara. Los colores propios están en `Core/DesignSystem/Tokens/Colors.swift`; el resto son del sistema.
 
 | Token | Valor | Uso |
 |---|---|---|
-| Vidrio | `glassEffect(.regular)` | Paneles, chips y fondos de los selectores |
-| Valor calculado | blanco al 92 % con texto oscuro | Resultado que calcula la app |
-| Valor elegido | fondo blanco al 8 %, borde blanco al 55 % | Valor que fija el usuario |
+| Fondo | `Color.black` | Todas las pantallas |
+| `meterAccent` | `Color.blue` | Tinte del cristal (chip seleccionado y botón principal). Fijo, para que no se atenúe bajo una hoja |
+| Acento de la app | `Color.accentColor` | Símbolos y texto de acción |
+| Texto | `.primary` / `.secondary` | Principal y de apoyo |
+| `meterResultFill`, `meterResultText`, `meterResultSecondaryText` | blanco al 92 % con texto oscuro | Valor que calcula la app |
+| `meterInputFill`, `meterInputBorder` | blanco al 8 % y borde al 55 % | Valor que fija el usuario |
+| `meterWheelFill`, `meterWheelBand` | gris oscuro y blanco al 14 % | Rueda de valores y tarjetas |
+| Vidrio | `glassEffect(.regular)` | Paneles, chips y barra |
 
 ## Tipografía
 
-| Uso | SwiftUI | Estilo en Figma |
-|---|---|---|
-| Títulos de onboarding | `.largeTitle.bold()` | Large Title / Emphasized |
-| Título de estado | `.title3.bold()` | Title 3 / Emphasized |
-| Texto | `.body` | Body / Regular |
-| Botones y filas | `.headline` | Headline / Regular |
-| Valor de exposición | `.system(size: 24, weight: .semibold).monospacedDigit()` | propio |
-| Valor en fila (horizontal) | tamaño 20, semibold | propio |
-| Etiqueta de celda | `.caption2` | propio (11) |
+| Uso | SwiftUI |
+|---|---|
+| Títulos de onboarding | `.title.bold()` |
+| Texto | `.body` / `.subheadline` |
+| Botones | `.headline` |
+| Valor de exposición | 24 pt semibold con dígitos monoespaciados |
+| Valor en fila (horizontal y Duo) | 20 pt semibold |
+| Etiqueta de celda | `.caption2` |
 
-Todo debe respetar Dynamic Type: los valores propios se definen con `@ScaledMetric` o estilos relativos.
+Todo respeta Dynamic Type: los tamaños propios usan `@ScaledMetric`.
 
 ## Espaciado y radios
 
 **Espaciado: cuadrícula de 4 pt**, de 4 a 40: `s4, s8, s12, s16, s20, s24, s28, s32, s36, s40`. El nombre lleva el valor y se usa como `Spacing.s16`.
 
-**Radios:** `r14` (chips y celdas en fila), `r16` (celda de valor), `r26` (tarjetas de grupo y hojas), `r34` (panel de vidrio) y `r36` (tarjeta del icono en onboarding). Se usan como `Radius.r16`. Las píldoras no son un token numérico: en SwiftUI son `Capsule()`.
+**Radios:** `r14` (banda central de la rueda), `r16` (celda de valor), `r26` (rueda y tarjeta de calibración), `r34` (panel de vidrio) y `r36` (tarjeta del icono en onboarding). Se usan como `Radius.r16`. Las píldoras (chips y botones) no son un token numérico: en SwiftUI son `Capsule()`.
 
 **Convención:** `enum` sin casos como espacio de nombres, constantes `static let` de tipo `CGFloat`, tipo marcado como `nonisolated` y nombre con el valor (`s`, `r`) en lugar de `spacing_16`. Más adelante, una segunda capa con nombres de uso (por ejemplo `Radius.valueCell = r16`) para que las vistas no dependan de los números.
 
@@ -62,12 +54,12 @@ El archivo de Figma se actualizará a estos valores cuando se retoque el diseño
 
 | Componente | Figma |
 |---|---|
-| `ValueCell(kind: .input / .result)` y su variante en fila | Cell/Input, Cell/Result, y "(row)" |
+| `ValueCell(kind: .input / .result)`; en fila con `usesCompactValues` | Cell/Input, Cell/Result, y "(row)" |
+| `ValueWheel` | Edición de valores, opción F |
 | `EquivalentChip(isSelected:)` | Chip/Default, Chip/Selected |
 | `GlassPanel { }` | Liquid Glass – Regular – Large |
-| `PrimaryActionButton("Medir")` | Button – Liquid Glass – Text |
-| `ExposureModePicker`, `MeteringPicker`, `LensPicker` | Segmented control |
-| `CompensationStepper` | Stepper |
-| `IconCard(symbol:)` | Ilustración de onboarding |
+| `PrimaryActionButton` | Button – Liquid Glass – Text |
+
+El selector de modo de exposición es un `Picker` segmentado del sistema; lente y medición son menús de la barra.
 
 Regla: si un estilo se repite en dos vistas, sube a `Core/DesignSystem`.
