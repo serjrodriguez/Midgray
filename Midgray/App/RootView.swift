@@ -39,16 +39,18 @@ struct RootView: View {
 
             if let onboarding, !onboarding.isFinished {
                 OnboardingView(viewModel: onboarding)
-            } else if permissions.access == .granted {
-                MeterView(viewModel: meter,
-                          previewSession: previewSession,
-                          settings: settings)
-            } else {
-                CameraAccessView(
-                    access: permissions.access,
-                    onRequest: { Task { await permissions.request() } },
-                    onOpenSettings: openSettings
-                )
+            } else if let access = permissions.access {
+                if access == .granted {
+                    MeterView(viewModel: meter,
+                              previewSession: previewSession,
+                              settings: settings)
+                } else {
+                    CameraAccessView(
+                        access: access,
+                        onRequest: { Task { await permissions.request() } },
+                        onOpenSettings: openSettings
+                    )
+                }
             }
         }
         .preferredColorScheme(.dark)

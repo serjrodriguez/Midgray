@@ -21,9 +21,9 @@ struct CameraPermissionsViewModelTests {
     ]
 
     @Test
-    func startsUndetermined() {
-        let viewModel = CameraPermissionsViewModel(permission: FakePermissionProvider())
-        #expect(viewModel.access == .undetermined)
+    func accessIsUnknownUntilTheStatusIsRead() {
+        let viewModel = CameraPermissionsViewModel(permission: FakePermissionProvider(status: .authorized))
+        #expect(viewModel.access == nil)
     }
 
     @Test(arguments: CameraPermissionsViewModelTests.statusMappings)
