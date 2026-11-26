@@ -12,7 +12,7 @@ struct EquivalentChip: View {
     let isSelected: Bool
 
     private var glass: Glass {
-        isSelected ? .regular.tint(.accentColor).interactive() : .regular.interactive()
+        isSelected ? .regular.tint(.meterAccent).interactive() : .regular.interactive()
     }
 
     var body: some View {

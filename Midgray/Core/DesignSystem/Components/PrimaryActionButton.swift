@@ -13,7 +13,7 @@ struct PrimaryActionButton: View {
     let action: () -> Void
 
     private var glass: Glass {
-        isProminent ? .regular.tint(.accentColor).interactive() : .regular.interactive()
+        isProminent ? .regular.tint(.meterAccent).interactive() : .regular.interactive()
     }
 
     var body: some View {

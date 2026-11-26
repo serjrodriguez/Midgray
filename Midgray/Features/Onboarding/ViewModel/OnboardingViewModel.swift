@@ -8,11 +8,6 @@
 import Foundation
 import Observation
 
-nonisolated enum OnboardingMode: Sendable {
-    case firstLaunch
-    case replay
-}
-
 @Observable
 final class OnboardingViewModel {
     var index = 0

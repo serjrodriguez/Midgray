@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import Observation
 import SrdzPermissionsCore
 
 @Observable
@@ -19,18 +20,18 @@ final class CameraPermissionsViewModel {
     
     func refresh() async {
         let status = await permission.status
-        setPermissions(status)
+        update(access: status)
     }
     
     func request() async {
         do {
             let statusResult = try await permission.requestAuthorization()
-            setPermissions(statusResult)
+            update(access: statusResult)
         } catch { }
     }
     
-    private func setPermissions(_ status: PermissionStatus) {
-        switch  status {
+    private func update(access status: PermissionStatus) {
+        switch status {
             case .authorized, .limited:
                 access = .granted
             case .denied:

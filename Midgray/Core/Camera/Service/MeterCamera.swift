@@ -12,15 +12,21 @@ actor MeterCamera: LightSensing {
     nonisolated(unsafe) let session = AVCaptureSession()
     nonisolated let lenses: [CameraLens]
 
+    private let queue = DispatchSerialQueue(label: "com.sergiorodriguez.Midgray.camera")
     private var device: AVCaptureDevice?
     private var meteringPoint: CGPoint?
+    private var activeRuns = 0
+
+    nonisolated var unownedExecutor: UnownedSerialExecutor {
+        queue.asUnownedSerialExecutor()
+    }
 
     init() {
         lenses = MeterCamera.discoverLenses()
     }
 
     nonisolated func readings() -> AsyncStream<CameraReading> {
-        AsyncStream { continuation in
+        AsyncStream(bufferingPolicy: .bufferingNewest(1)) { continuation in
             let task = Task { await self.run(continuation) }
             continuation.onTermination = { _ in task.cancel() }
         }
@@ -46,10 +52,12 @@ actor MeterCamera: LightSensing {
 
         guard let newInput = try? AVCaptureDeviceInput(device: newDevice) else { return }
 
+        let previousInputs = session.inputs
         session.beginConfiguration()
-        for input in session.inputs { session.removeInput(input) }
+        for input in previousInputs { session.removeInput(input) }
 
         guard session.canAddInput(newInput) else {
+            for input in previousInputs where session.canAddInput(input) { session.addInput(input) }
             session.commitConfiguration()
             return
         }
@@ -67,7 +75,10 @@ actor MeterCamera: LightSensing {
             return
         }
 
-        session.startRunning()
+        activeRuns += 1
+        if !session.isRunning {
+            session.startRunning()
+        }
 
         while !Task.isCancelled {
             if let device {
@@ -81,7 +92,10 @@ actor MeterCamera: LightSensing {
             try? await Task.sleep(for: .milliseconds(100))
         }
 
-        session.stopRunning()
+        activeRuns -= 1
+        if activeRuns == 0 {
+            session.stopRunning()
+        }
         continuation.finish()
     }
 
@@ -93,11 +107,17 @@ actor MeterCamera: LightSensing {
               session.canAddInput(input) else { return false }
 
         session.automaticallyConfiguresApplicationAudioSession = false
+        session.beginConfiguration()
+        defer { session.commitConfiguration() }
+
         session.addInput(input)
 
         let output = AVCaptureVideoDataOutput()
         output.alwaysDiscardsLateVideoFrames = true
-        guard session.canAddOutput(output) else { return false }
+        guard session.canAddOutput(output) else {
+            session.removeInput(input)
+            return false
+        }
         session.addOutput(output)
 
         prepareExposure(of: camera)

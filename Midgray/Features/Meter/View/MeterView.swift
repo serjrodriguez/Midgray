@@ -11,7 +11,6 @@ import AVFoundation
 struct MeterView: View {
     @State private var viewModel: MeterViewModel
     @State private var settingsViewModel: SettingsViewModel?
-    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
     private let previewSession: AVCaptureSession?
     private let settings: any SettingsRepository
 
@@ -78,91 +77,10 @@ struct MeterView: View {
         ZStack {
             Color.black.ignoresSafeArea()
 
-            background
+            MeterViewfinder(viewModel: viewModel, previewSession: previewSession)
 
-            content
+            MeterReadoutOverlay(viewModel: viewModel)
         }
-    }
-
-    private var background: some View {
-        GeometryReader { geometry in
-            ZStack {
-                if let previewSession {
-                    CameraPreview(session: previewSession, onTap: handleSpotTap)
-                        .opacity(viewModel.isSwitchingLens ? 0 : 1)
-                        .animation(.easeInOut(duration: 0.2), value: viewModel.isSwitchingLens)
-                } else {
-                    Color.clear
-                        .contentShape(Rectangle())
-                        .onTapGesture { location in
-                            let point = CGPoint(x: location.x / geometry.size.width, y: location.y / geometry.size.height)
-                            handleSpotTap(viewPoint: point, devicePoint: point)
-                        }
-                }
-
-                if viewModel.meteringMode == .spot, viewModel.state != .idle {
-                    SpotReticle()
-                        .position(x: viewModel.spot.x * geometry.size.width, y: viewModel.spot.y * geometry.size.height)
-                        .animation(.snappy, value: viewModel.spot)
-                }
-            }
-        }
-        .ignoresSafeArea()
-    }
-
-    private func handleSpotTap(viewPoint: CGPoint, devicePoint: CGPoint) {
-        viewModel.setSpot(viewPoint: viewPoint, devicePoint: devicePoint)
-    }
-
-    @ViewBuilder
-    private var content: some View {
-        switch viewModel.state {
-        case .idle:
-            ProgressView {
-                Text("Measuring...")
-            }
-        case .measuring(let readout):
-            panel(readout, isOutOfRange: false)
-        case .outOfRange(let readout):
-            panel(readout, isOutOfRange: true)
-        }
-    }
-
-    private func panel(_ readout: MeterReadout, isOutOfRange: Bool) -> some View {
-        VStack(spacing: Spacing.s12) {
-            Spacer()
-
-            if isOutOfRange {
-                OutOfRangeBadge()
-            }
-
-            if dynamicTypeSize.isAccessibilitySize {
-                ScrollView {
-                    MeterPanel(viewModel: viewModel, readout: readout)
-                }
-                .scrollBounceBehavior(.basedOnSize)
-                .defaultScrollAnchor(.bottom)
-            } else {
-                MeterPanel(viewModel: viewModel, readout: readout)
-            }
-        }
-        .padding(.horizontal, Spacing.s12)
-        .padding(.bottom, Spacing.s8)
-    }
-
-}
-
-private struct OutOfRangeBadge: View {
-    var body: some View {
-        Label("Out of range", systemImage: "exclamationmark.triangle.fill")
-            .font(.footnote.weight(.semibold))
-            .foregroundStyle(.primary)
-            .padding(.horizontal, Spacing.s16)
-            .frame(minHeight: Spacing.s32)
-            .glassEffect(.regular.tint(.orange.opacity(0.35)), in: .capsule)
-            .onAppear {
-                AccessibilityNotification.Announcement(String(localized: "Out of range")).post()
-            }
     }
 }
 
