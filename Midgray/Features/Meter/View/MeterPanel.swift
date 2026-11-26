@@ -10,13 +10,16 @@ import SwiftUI
 struct MeterPanel: View {
     @Bindable var viewModel: MeterViewModel
     let readout: MeterReadout
+    var showsEquivalents = true
+
+    @Environment(\.usesCompactValues) private var usesCompactValues
 
     var body: some View {
         GlassPanel {
-            VStack(spacing: Spacing.s12) {
+            VStack(spacing: usesCompactValues ? Spacing.s8 : Spacing.s12) {
                 modePicker
 
-                if viewModel.mode == .auto {
+                if showsEquivalents, viewModel.mode == .auto {
                     EquivalentsRow(
                         equivalents: readout.equivalents,
                         selectedAperture: readout.suggestion?.aperture,

@@ -9,9 +9,20 @@ import SwiftUI
 
 struct MeterReadoutOverlay: View {
     let viewModel: MeterViewModel
+    let layout: MeterLayout
+    var showsEquivalentsHeader = true
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
 
+    private static let sideWidth: CGFloat = 340
+    private static let maximumStackedWidth: CGFloat = 520
+
     var body: some View {
+        content
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+    }
+
+    @ViewBuilder
+    private var content: some View {
         switch viewModel.state {
         case .idle:
             ProgressView {
@@ -36,6 +47,23 @@ struct MeterReadoutOverlay: View {
     }
 
     private func panel(_ readout: MeterReadout, isOutOfRange: Bool) -> some View {
+        Group {
+            switch layout {
+            case .stacked:
+                stackedPanel(readout, isOutOfRange: isOutOfRange)
+            case .side:
+                sidePanel(readout, isOutOfRange: isOutOfRange)
+            case .bottomHalf:
+                bottomHalfPanel(readout, isOutOfRange: isOutOfRange)
+            case .trailingHalf:
+                trailingHalfPanel(readout, isOutOfRange: isOutOfRange)
+            }
+        }
+        .padding(.horizontal, Spacing.s12)
+        .padding(.bottom, Spacing.s8)
+    }
+
+    private func stackedPanel(_ readout: MeterReadout, isOutOfRange: Bool) -> some View {
         VStack(spacing: Spacing.s12) {
             Spacer()
 
@@ -43,18 +71,81 @@ struct MeterReadoutOverlay: View {
                 OutOfRangeBadge()
             }
 
-            if dynamicTypeSize.isAccessibilitySize {
-                ScrollView {
-                    MeterPanel(viewModel: viewModel, readout: readout)
-                }
-                .scrollBounceBehavior(.basedOnSize)
-                .defaultScrollAnchor(.bottom)
-            } else {
+            scrollingIfNeeded {
                 MeterPanel(viewModel: viewModel, readout: readout)
             }
         }
+        .frame(maxWidth: Self.maximumStackedWidth)
+    }
+
+    private func bottomHalfPanel(_ readout: MeterReadout, isOutOfRange: Bool) -> some View {
+        VStack(spacing: Spacing.s12) {
+            if isOutOfRange {
+                OutOfRangeBadge()
+            }
+
+            scrollingIfNeeded {
+                MeterPanel(viewModel: viewModel, readout: readout)
+            }
+
+            Spacer(minLength: 0)
+        }
         .padding(.horizontal, Spacing.s12)
-        .padding(.bottom, Spacing.s8)
+        .padding(.top, Spacing.s24)
+    }
+
+    private func sidePanel(_ readout: MeterReadout, isOutOfRange: Bool) -> some View {
+        HStack(alignment: .bottom, spacing: Spacing.s16) {
+            VStack(spacing: Spacing.s12) {
+                Spacer()
+
+                if isOutOfRange {
+                    OutOfRangeBadge()
+                }
+
+                MeterEquivalents(viewModel: viewModel, showsHeader: showsEquivalentsHeader)
+            }
+            .frame(maxWidth: .infinity)
+
+            compactPanel(readout)
+                .frame(width: Self.sideWidth)
+        }
+    }
+
+    private func trailingHalfPanel(_ readout: MeterReadout, isOutOfRange: Bool) -> some View {
+        VStack(spacing: Spacing.s12) {
+            Spacer(minLength: 0)
+
+            if isOutOfRange {
+                OutOfRangeBadge()
+            }
+
+            compactPanel(readout)
+        }
+    }
+
+    private func compactPanel(_ readout: MeterReadout) -> some View {
+        VStack(spacing: 0) {
+            Spacer(minLength: 0)
+
+            scrollingIfNeeded {
+                MeterPanel(viewModel: viewModel, readout: readout, showsEquivalents: false)
+                    .environment(\.usesCompactValues, true)
+            }
+        }
+    }
+
+    @ViewBuilder
+    private func scrollingIfNeeded(@ViewBuilder content: () -> some View) -> some View {
+        if dynamicTypeSize.isAccessibilitySize {
+            ScrollView {
+                content()
+            }
+            .scrollBounceBehavior(.basedOnSize)
+            .defaultScrollAnchor(.bottom)
+        } else {
+            content()
+        }
     }
 }
 

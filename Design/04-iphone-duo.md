@@ -2,7 +2,7 @@
 
 Resumen de lo que dice la documentación de Apple (HIG "Designing for iPhone Duo" y la documentación de SwiftUI) y de cómo lo aplica el diseño de Midgray. Las seis posturas están dibujadas en Figma, sección "iPhone Duo".
 
-> Verificar antes de programar: la disponibilidad exacta de cada API (versión mínima de iOS) en la documentación de Xcode. Midgray apunta a iOS 26; las APIs de Duo se usarán con `#available` si exigen una versión posterior.
+> Implementado. Las APIs de Duo (`ArrangementView`, `onHingeChange`, `axisBehavior`) requieren iOS 27.1. Midgray apunta a iOS 26, así que se usan con `#available` y en versiones anteriores la vista previa y los controles van en un `ZStack`.
 
 ## Qué dice Apple
 
@@ -35,8 +35,31 @@ Resumen de lo que dice la documentación de Apple (HIG "Designing for iPhone Duo
 
 Device Hub de Xcode permite simular el iPhone Duo, con botones para cerrado, parcialmente abierto y abierto, y un control para plegar a cualquier ángulo (Opción + arrastrar).
 
+## Implementación
+
+- `MeterView` usa `ArrangementView(.overlay)`: primario = controles, secundario = vista previa. Plegado, el sistema pone los controles abajo o a la derecha (`overlayArrangementEdge`).
+- `MeterLayout` decide la disposición a partir del tamaño que reciben los controles y el del contenedor, sin mirar orientación ni dispositivo:
+
+| Caso | Cuándo | Disposición |
+|---|---|---|
+| `stacked` | Alto mayor que ancho, o menos de 560 pt de ancho | Panel completo abajo (máximo 520 pt) |
+| `side` | Ancho mayor que alto y al menos 560 pt | Panel de 340 pt con valores en filas; equivalentes sobre la cámara |
+| `bottomHalf` | Los controles reciben menos del 75 % del alto | Panel completo a todo el ancho, en la parte alta de la mitad inferior |
+| `trailingHalf` | Los controles reciben menos del 75 % del ancho | Panel con filas a la derecha; equivalentes sobre la mitad de la cámara |
+
+- El título de las equivalentes solo se muestra cuando la altura disponible es menor de 360 pt (iPhone en horizontal); en el Duo van solo los chips.
+- La lente y la compensación son texto, y el sistema deja los elementos con texto en la barra horizontal. Por eso el grupo lleva `axisBehavior(.verticalPreferred)`.
+- La vista previa gira con `AVCaptureDevice.RotationCoordinator`, y el punto de medición puntual vuelve al centro cuando cambia el tamaño.
+
+## Diferencias con el diseño
+
+- El panel lateral mide 340 pt en todos los casos (el diseño usa entre 320 y 347), para que «Velocidad» no salga cortado.
+- En la pantalla externa horizontal caben menos equivalentes completas porque los chips reales son más anchos.
+- La barra vertical sale a un lado u otro según el giro; lo decide el sistema.
+- La lista de equivalentes no se simplifica en la pantalla externa vertical.
+
 ## Pendiente
 
-- Comprobar en Device Hub el comportamiento real de `ArrangementView(.overlay)` y qué eje elige el sistema en cada postura.
-- Decidir si el panel con la lista de equivalentes se simplifica en la pantalla externa vertical.
-- En horizontal externa, el selector "Velocidad" queda justo de ancho: ampliar el panel o abreviar.
+- Probar en un iPhone Duo real: solo se ha verificado en el simulador, que no tiene cámara.
+- En el simulador, los botones de la barra vertical aparecen vacíos un momento justo después de cambiar de postura y luego se dibujan. Comprobar si ocurre en el dispositivo.
+- Revisar la pantalla de permiso de cámara en el Duo.

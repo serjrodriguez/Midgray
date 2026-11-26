@@ -140,4 +140,16 @@ struct MeterViewModelMeteringTests {
         #expect(resent)
         #expect(sensor.meteringPoints.last == .some(nil))
     }
+
+    @Test
+    func resettingTheSpotReturnsItToTheCenter() throws {
+        let smoother = try #require(EVSmoother())
+        let viewModel = MeterViewModel(sensor: RecordingLightSensor(lenses: []), smoother: smoother)
+        viewModel.setMeteringMode(.spot)
+        viewModel.setSpot(viewPoint: CGPoint(x: 0.2, y: 0.3), devicePoint: CGPoint(x: 0.3, y: 0.8))
+
+        viewModel.resetSpot()
+
+        #expect(viewModel.spot == MeterViewModel.center)
+    }
 }
