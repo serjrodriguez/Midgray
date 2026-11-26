@@ -27,6 +27,7 @@ final class MeterViewModel {
     private(set) var calibration: Double = 0
     private(set) var autoAperture: Double
     private(set) var isHeld = false
+    private(set) var hasFailed = false
     private(set) var selectedLens: CameraLens?
     private(set) var isSwitchingLens = false
     private(set) var meteringMode: MeteringMode = .average
@@ -65,6 +66,7 @@ final class MeterViewModel {
     var hasReading: Bool { latest != nil }
 
     var state: MeterState {
+        guard !hasFailed else { return .failed }
         guard let latest else { return .idle }
 
         let calibratedEV = latest.ev + calibration
@@ -100,14 +102,14 @@ final class MeterViewModel {
         let readings = sensor.readings()
 
         task = Task { [weak self] in
-            for await reading in readings {
-                guard let self else { return }
-                guard !isHeld else { continue }
-                guard let value = reading.ev100,
-                      let smoothed = smoother.add(value),
-                      let stable = stabilizer.add(smoothed) else { continue }
-
-                publish(Sample(ev: stable, isOutOfRange: abs(reading.exposureTargetOffset) > Self.outOfRangeThreshold))
+            do {
+                for try await reading in readings {
+                    guard let self else { return }
+                    process(reading)
+                }
+            } catch {
+                guard !Task.isCancelled else { return }
+                self?.fail()
             }
         }
     }
@@ -119,6 +121,7 @@ final class MeterViewModel {
         stabilizer.reset()
         latest = nil
         isHeld = false
+        hasFailed = false
     }
 
     func selectLens(_ lens: CameraLens) {
@@ -184,6 +187,21 @@ private extension MeterViewModel {
     nonisolated struct Sample: Equatable {
         let ev: Double
         let isOutOfRange: Bool
+    }
+
+    func process(_ reading: CameraReading) {
+        guard !isHeld,
+              let value = reading.ev100,
+              let smoothed = smoother.add(value),
+              let stable = stabilizer.add(smoothed) else { return }
+
+        publish(Sample(ev: stable, isOutOfRange: abs(reading.exposureTargetOffset) > Self.outOfRangeThreshold))
+    }
+
+    func fail() {
+        latest = nil
+        isHeld = false
+        hasFailed = true
     }
 
     func publish(_ sample: Sample) {

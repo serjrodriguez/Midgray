@@ -17,6 +17,17 @@ struct MeterReadoutOverlay: View {
             ProgressView {
                 Text("Measuring...")
             }
+        case .failed:
+            ContentUnavailableView {
+                Label("Camera unavailable", systemImage: "video.slash")
+            } description: {
+                Text("Midgray could not start the camera. Close other apps that use it and try again.")
+            } actions: {
+                Button("Try again", action: viewModel.start)
+                    .buttonStyle(.borderedProminent)
+                    .buttonBorderShape(.capsule)
+                    .controlSize(.large)
+            }
         case .measuring(let readout):
             panel(readout, isOutOfRange: false)
         case .outOfRange(let readout):

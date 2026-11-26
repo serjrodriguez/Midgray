@@ -715,6 +715,23 @@
         }
       }
     },
+    "Midgray could not start the camera. Close other apps that use it and try again." : {
+      "comment" : "Explanation shown when the camera fails to start",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Midgray could not start the camera. Close other apps that use it and try again."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Midgray no pudo iniciar la cámara. Cierra otras apps que la estén usando e inténtalo de nuevo."
+          }
+        }
+      }
+    },
     "Midgray needs the camera to measure the light of a scene. It does not save photos or send data." : {
       "comment" : "Explains why the camera permission is requested",
       "localizations" : {
@@ -1085,6 +1102,23 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "El botón ± hace la sugerencia más clara o más oscura que la lectura, en incrementos de un tercio de paso."
+          }
+        }
+      }
+    },
+    "Try again" : {
+      "comment" : "Button that retries starting the camera",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Try again"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Reintentar"
           }
         }
       }

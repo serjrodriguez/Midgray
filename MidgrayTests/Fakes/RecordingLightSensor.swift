@@ -27,8 +27,8 @@ final class RecordingLightSensor: LightSensing {
         points.withLock { $0 }
     }
 
-    func readings() -> AsyncStream<CameraReading> {
-        AsyncStream { $0.finish() }
+    func readings() -> AsyncThrowingStream<CameraReading, any Error> {
+        AsyncThrowingStream { $0.finish() }
     }
 
     func selectLens(_ lens: CameraLens) async {
