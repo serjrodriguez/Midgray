@@ -32,11 +32,11 @@ struct HelpView: View {
                     VStack(alignment: .leading, spacing: Spacing.s4) {
                         Text(topic.title)
                             .font(.headline)
+                            .accessibilityAddTraits(.isHeader)
 
                         Text(topic.body)
                             .foregroundStyle(.secondary)
                     }
-                    .accessibilityElement(children: .combine)
                 }
             }
             .frame(maxWidth: .infinity, alignment: .leading)

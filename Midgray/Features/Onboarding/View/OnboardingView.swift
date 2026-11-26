@@ -45,8 +45,9 @@ struct OnboardingView: View {
             Button("Skip") { viewModel.skip() }
                 .opacity(viewModel.showsSkip ? 1 : 0)
                 .disabled(!viewModel.showsSkip)
+                .accessibilityHidden(!viewModel.showsSkip)
         }
-        .frame(height: Spacing.s40)
+        .frame(minHeight: Spacing.s40)
         .padding(.horizontal, Spacing.s24)
     }
 
@@ -77,6 +78,16 @@ private struct OnboardingPageView: View {
     let page: OnboardingPage
 
     var body: some View {
+        GeometryReader { geometry in
+            ScrollView {
+                content
+                    .frame(maxWidth: .infinity, minHeight: geometry.size.height)
+            }
+            .scrollBounceBehavior(.basedOnSize)
+        }
+    }
+
+    private var content: some View {
         VStack(spacing: Spacing.s24) {
             Spacer()
 
@@ -91,13 +102,13 @@ private struct OnboardingPageView: View {
                 Text(page.title)
                     .font(.title.bold())
                     .multilineTextAlignment(.center)
+                    .accessibilityAddTraits(.isHeader)
 
                 Text(page.message)
                     .font(.subheadline)
                     .foregroundStyle(.secondary)
                     .multilineTextAlignment(.center)
             }
-            .accessibilityElement(children: .combine)
 
             Spacer()
             Spacer()
@@ -114,7 +125,7 @@ private struct PageDots: View {
         HStack(spacing: Spacing.s8) {
             ForEach(0..<count, id: \.self) { index in
                 Circle()
-                    .fill(index == current ? Color.primary : Color.white.opacity(0.3))
+                    .fill(index == current ? Color.primary : Color.white.opacity(0.4))
                     .frame(width: 8, height: 8)
             }
         }

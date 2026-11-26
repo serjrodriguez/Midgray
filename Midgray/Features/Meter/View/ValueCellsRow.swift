@@ -16,12 +16,19 @@ struct ValueCellsRow: View {
 
     @State private var editing: ExposureSetting?
     @State private var isInteracting = false
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
 
     nonisolated static let autoCloseDelay: Duration = .seconds(2)
     private static let placeholder = "—"
 
+    private var layout: AnyLayout {
+        dynamicTypeSize.isAccessibilitySize
+            ? AnyLayout(VStackLayout(spacing: Spacing.s8))
+            : AnyLayout(HStackLayout(spacing: Spacing.s8))
+    }
+
     var body: some View {
-        HStack(spacing: Spacing.s8) {
+        layout {
             cell(
                 for: .aperture,
                 title: "Aperture",

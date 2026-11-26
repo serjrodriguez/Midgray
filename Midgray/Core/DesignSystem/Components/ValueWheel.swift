@@ -85,7 +85,7 @@ struct ValueWheel<Value: Hashable>: View {
                         Text(format(value))
                             .font(.system(size: isSelected ? selectedSize : otherSize, weight: isSelected ? .semibold : .regular).monospacedDigit())
                             .foregroundStyle(.primary)
-                            .opacity(isSelected ? 1 : 0.45)
+                            .opacity(isSelected ? 1 : 0.5)
                             .frame(maxWidth: .infinity)
                             .frame(height: rowHeight)
                             .id(value)

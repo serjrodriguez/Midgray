@@ -29,8 +29,13 @@ struct EditableValueCell: View {
                     .foregroundStyle(.secondary)
                     .padding(.trailing, Spacing.s8)
                     .opacity(isEditing ? 0 : 1)
-                    .accessibilityHidden(true)
             }
+            .accessibilityElement(children: .ignore)
+            .accessibilityLabel(title)
+            .accessibilityValue(displayedValue)
+            .accessibilityAdjustableAction(adjust)
+            .accessibilityAction { open() }
+            .accessibilityHidden(isEditing)
             .contentShape(Rectangle())
             .onTapGesture { open() }
             .gesture(scrub)
@@ -46,7 +51,6 @@ struct EditableValueCell: View {
             .onChange(of: isWheelScrolling) { _, scrolling in
                 isInteracting = scrolling
             }
-            .accessibilityAddTraits(.isButton)
     }
 
     private var scrub: some Gesture {
@@ -68,6 +72,13 @@ struct EditableValueCell: View {
                 scrubStartValue = nil
                 isInteracting = false
             }
+    }
+
+    private func adjust(_ direction: AccessibilityAdjustmentDirection) {
+        let steps = direction == .increment ? 1 : -1
+        if let target = ExposureScale.step(selection, by: steps, in: values) {
+            selection = target
+        }
     }
 
     private func open() {
