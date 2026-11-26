@@ -5,6 +5,7 @@
 //  Created by Sergio Rodriguez on 19/11/26.
 //
 
+import Foundation
 import Testing
 @testable import Midgray
 
@@ -77,5 +78,17 @@ struct ExposureScaleTests {
         #expect(ExposureScale.step(0, by: 1, in: ExposureScale.apertures) == nil)
         #expect(ExposureScale.step(-3, by: 1, in: ExposureScale.apertures) == nil)
         #expect(ExposureScale.step(5.6, by: 1, in: []) == nil)
+    }
+
+    @Test
+    func everyLabelHasAnExactStop() {
+        #expect(ExposureScale.apertureStops.map(\.nominal) == ExposureScale.apertures)
+        #expect(ExposureScale.shutterStops.map(\.nominal) == ExposureScale.shutterSpeeds)
+        #expect(ExposureScale.isoStops.map(\.nominal) == ExposureScale.isoValues)
+    }
+
+    @Test(arguments: [ExposureScale.apertureStops, ExposureScale.shutterStops, ExposureScale.isoStops])
+    func exactStopsStayCloseToTheirLabels(stops: [ExposureStop]) {
+        #expect(stops.allSatisfy { abs(log2($0.nominal / $0.exact)) < 0.1 })
     }
 }
