@@ -1,0 +1,1264 @@
+{
+  "sourceLanguage" : "en",
+  "strings" : {
+    "About" : {
+      "comment" : "Settings section with app information",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "About"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Acerca de"
+          }
+        }
+      }
+    },
+    "Allow camera" : {
+      "comment" : "Button that triggers the system camera permission prompt",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Allow camera"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Permitir cámara"
+          }
+        }
+      }
+    },
+    "Allow camera access" : {
+      "comment" : "Onboarding button that asks for the camera permission",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Allow camera access"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Permitir acceso a la cámara"
+          }
+        }
+      }
+    },
+    "Aperture" : {
+      "comment" : "Exposure setting name: lens opening",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aperture"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apertura"
+          }
+        }
+      }
+    },
+    "Aperture and Shutter keep the value you set and suggest the other. ISO suggests the sensitivity for the aperture and shutter speed you set." : {
+      "comment" : "Help topic about exposure modes",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aperture and Shutter keep the value you set and suggest the other. ISO suggests the sensitivity for the aperture and shutter speed you set."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apertura y Velocidad mantienen el valor que fijas y sugieren el otro. ISO sugiere la sensibilidad para la apertura y la velocidad que fijas."
+          }
+        }
+      }
+    },
+    "Auto" : {
+      "comment" : "Exposure mode segment",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Auto"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Auto"
+          }
+        }
+      }
+    },
+    "Average" : {
+      "comment" : "Metering mode that measures the whole scene",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Average"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Promedio"
+          }
+        }
+      }
+    },
+    "Average measures the whole scene. Spot measures only the area around the point you tap on the screen. Switch between them with the viewfinder button." : {
+      "comment" : "Help topic about metering modes",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Average measures the whole scene. Spot measures only the area around the point you tap on the screen. Switch between them with the viewfinder button."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Promedio mide toda la escena. Puntual mide solo la zona alrededor del punto que tocas en la pantalla. Cambia entre ambos con el botón del visor."
+          }
+        }
+      }
+    },
+    "Average or spot" : {
+      "comment" : "Onboarding page 3 title",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Average or spot"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Promedio o puntual"
+          }
+        }
+      }
+    },
+    "Calibration" : {
+      "comment" : "Settings row and screen to adjust the reading in EV",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Calibration"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Calibración"
+          }
+        }
+      }
+    },
+    "Camera access" : {
+      "comment" : "Title of the screen that asks for camera permission",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Camera access"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Acceso a la cámara"
+          }
+        }
+      }
+    },
+    "Camera access is off" : {
+      "comment" : "Title when the user denied the camera permission",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Camera access is off"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "El acceso a la cámara está desactivado"
+          }
+        }
+      }
+    },
+    "Camera access is restricted on this device, so Midgray cannot measure light." : {
+      "comment" : "Explains a restricted camera permission",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Camera access is restricted on this device, so Midgray cannot measure light."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "El acceso a la cámara está restringido en este dispositivo, por lo que Midgray no puede medir la luz."
+          }
+        }
+      }
+    },
+    "Camera unavailable" : {
+      "comment" : "Title when camera access is restricted by the system",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Camera unavailable"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cámara no disponible"
+          }
+        }
+      }
+    },
+    "Compare the reading with your light meter or camera and adjust until they match." : {
+      "comment" : "Calibration screen instructions",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Compare the reading with your light meter or camera and adjust until they match."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Compara la lectura con tu exposímetro o tu cámara y ajusta hasta que coincidan."
+          }
+        }
+      }
+    },
+    "Continue" : {
+      "comment" : "Onboarding button to go to the next page",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Continue"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Continuar"
+          }
+        }
+      }
+    },
+    "Current adjustment" : {
+      "comment" : "Label under the calibration value",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Current adjustment"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ajuste actual"
+          }
+        }
+      }
+    },
+    "Decrease adjustment" : {
+      "comment" : "Accessibility label of the minus calibration button",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Decrease adjustment"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Reducir ajuste"
+          }
+        }
+      }
+    },
+    "Default lens" : {
+      "comment" : "Settings row and screen to choose the lens used at launch",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Default lens"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lente predeterminada"
+          }
+        }
+      }
+    },
+    "Done" : {
+      "comment" : "Onboarding button on the last page of the tutorial",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Done"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Listo"
+          }
+        }
+      }
+    },
+    "Equivalent exposures" : {
+      "comment" : "Help topic title",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Equivalent exposures"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Exposiciones equivalentes"
+          }
+        }
+      }
+    },
+    "Equivalent exposures for %@" : {
+      "comment" : "Caption above the equivalent exposure chips. The argument is the metered EV, for example EV 14.0",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Equivalent exposures for %@"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Exposiciones equivalentes para %@"
+          }
+        }
+      }
+    },
+    "EV" : {
+      "comment" : "Help topic title",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "EV"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "EV"
+          }
+        }
+      }
+    },
+    "EV measures how much light there is in the scene. Higher numbers mean brighter light: around 15 on a sunny day, around 5 in a dim room." : {
+      "comment" : "Help topic about EV",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "EV measures how much light there is in the scene. Higher numbers mean brighter light: around 15 on a sunny day, around 5 in a dim room."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "El EV mide cuánta luz hay en la escena. Los números más altos indican más luz: alrededor de 15 en un día soleado y de 5 en una habitación con poca luz."
+          }
+        }
+      }
+    },
+    "Exposure compensation" : {
+      "comment" : "Toolbar button and wheel title to bias the exposure in EV steps",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Exposure compensation"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Compensación de exposición"
+          }
+        }
+      }
+    },
+    "Exposure mode" : {
+      "comment" : "Accessibility label of the exposure mode selector",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Exposure mode"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Modo de exposición"
+          }
+        }
+      }
+    },
+    "Exposure modes" : {
+      "comment" : "Help topic title",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Exposure modes"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Modos de exposición"
+          }
+        }
+      }
+    },
+    "Held · tap to measure again" : {
+      "comment" : "Main button label while the reading is held",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Held · tap to measure again"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Retenido · toca para medir de nuevo"
+          }
+        }
+      }
+    },
+    "Help" : {
+      "comment" : "Settings section with help topics",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Help"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ayuda"
+          }
+        }
+      }
+    },
+    "Hold" : {
+      "comment" : "Help topic title",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hold"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Retención"
+          }
+        }
+      }
+    },
+    "How to read the measurement" : {
+      "comment" : "Settings row and title of the help screen",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "How to read the measurement"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cómo leer la medición"
+          }
+        }
+      }
+    },
+    "If Midgray reads differently from your camera or a hand-held meter, adjust it in Settings until they match." : {
+      "comment" : "Help topic about calibration",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "If Midgray reads differently from your camera or a hand-held meter, adjust it in Settings until they match."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Si Midgray mide distinto que tu cámara o un exposímetro de mano, ajústalo en Ajustes hasta que coincidan."
+          }
+        }
+      }
+    },
+    "In Auto mode each chip is an aperture and shutter speed pair that lets in the same light. Tap one to use it." : {
+      "comment" : "Help topic about equivalent exposures",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "In Auto mode each chip is an aperture and shutter speed pair that lets in the same light. Tap one to use it."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "En modo Auto cada chip es una pareja de apertura y velocidad que deja entrar la misma luz. Toca una para usarla."
+          }
+        }
+      }
+    },
+    "Increase adjustment" : {
+      "comment" : "Accessibility label of the plus calibration button",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Increase adjustment"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aumentar ajuste"
+          }
+        }
+      }
+    },
+    "ISO" : {
+      "comment" : "Exposure setting name: sensor sensitivity",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ISO"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ISO"
+          }
+        }
+      }
+    },
+    "Lens" : {
+      "comment" : "Accessibility label of the lens selector button",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lens"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lente"
+          }
+        }
+      }
+    },
+    "Measure" : {
+      "comment" : "Main button of the meter, takes the reading",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Measure"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Medir"
+          }
+        }
+      }
+    },
+    "Measure the light of your scene" : {
+      "comment" : "Onboarding page 1 title",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Measure the light of your scene"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mide la luz de tu escena"
+          }
+        }
+      }
+    },
+    "Measure the whole scene or tap a point to measure only that area." : {
+      "comment" : "Onboarding page 3 text",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Measure the whole scene or tap a point to measure only that area."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mide toda la escena o toca un punto para medir solo esa zona."
+          }
+        }
+      }
+    },
+    "Measurement" : {
+      "comment" : "Settings section about how the light is measured",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Measurement"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Medición"
+          }
+        }
+      }
+    },
+    "Measuring..." : {
+      "comment" : "Placeholder while the first reading has not arrived",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Measuring..."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Midiendo..."
+          }
+        }
+      }
+    },
+    "Metering" : {
+      "comment" : "Accessibility label of the metering mode button and help topic title",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Metering"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Medición"
+          }
+        }
+      }
+    },
+    "Midgray could not start the camera. Close other apps that use it and try again." : {
+      "comment" : "Explanation shown when the camera fails to start",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Midgray could not start the camera. Close other apps that use it and try again."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Midgray no pudo iniciar la cámara. Cierra otras apps que la estén usando e inténtalo de nuevo."
+          }
+        }
+      }
+    },
+    "Midgray needs the camera to measure the light of a scene. It does not save photos or send data." : {
+      "comment" : "Explains why the camera permission is requested",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Midgray needs the camera to measure the light of a scene. It does not save photos or send data."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Midgray necesita la cámara para medir la luz de una escena. No guarda fotos ni envía datos."
+          }
+        }
+      }
+    },
+    "Midgray starts with this lens." : {
+      "comment" : "Footer of the default lens screen",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Midgray starts with this lens."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Midgray empieza con esta lente."
+          }
+        }
+      }
+    },
+    "Midgray uses the camera only to measure the light of a scene. It never saves photos or videos." : {
+      "comment" : "Privacy paragraph about the camera",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Midgray uses the camera only to measure the light of a scene. It never saves photos or videos."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Midgray usa la cámara solo para medir la luz de una escena. Nunca guarda fotos ni vídeos."
+          }
+        }
+      }
+    },
+    "Midgray uses the camera only to measure the light. It does not save photos or send data." : {
+      "comment" : "Onboarding page 4 text",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Midgray uses the camera only to measure the light. It does not save photos or send data."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Midgray usa la cámara solo para medir la luz. No guarda fotos ni envía datos."
+          }
+        }
+      }
+    },
+    "Not now" : {
+      "comment" : "Onboarding button that postpones the camera permission",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Not now"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ahora no"
+          }
+        }
+      }
+    },
+    "Nothing is sent anywhere: Midgray has no accounts and collects no data." : {
+      "comment" : "Privacy paragraph about data",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nothing is sent anywhere: Midgray has no accounts and collects no data."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No se envía nada a ningún sitio: Midgray no tiene cuentas ni recopila datos."
+          }
+        }
+      }
+    },
+    "Open Settings" : {
+      "comment" : "Button that opens the app page in system Settings",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Open Settings"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Abrir Ajustes"
+          }
+        }
+      }
+    },
+    "Out of range" : {
+      "comment" : "Help topic title",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Out of range"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fuera de rango"
+          }
+        }
+      }
+    },
+    "Page %lld of %lld" : {
+      "comment" : "Accessibility label of the onboarding page dots",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Page %1$lld of %2$lld"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Página %1$lld de %2$lld"
+          }
+        }
+      }
+    },
+    "Point your iPhone and Midgray works out the exposure for your camera." : {
+      "comment" : "Onboarding page 1 text",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Point your iPhone and Midgray works out the exposure for your camera."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apunta el iPhone y Midgray calcula la exposición para tu cámara."
+          }
+        }
+      }
+    },
+    "Privacy" : {
+      "comment" : "Settings row and screen explaining what the app does with data",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Privacy"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Privacidad"
+          }
+        }
+      }
+    },
+    "Reset to %@" : {
+      "comment" : "Button that clears the calibration",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Reset to %@"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Restablecer a %@"
+          }
+        }
+      }
+    },
+    "Set the aperture, shutter speed or ISO and the app calculates the other values." : {
+      "comment" : "Onboarding page 2 text",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Set the aperture, shutter speed or ISO and the app calculates the other values."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fija la apertura, la velocidad o el ISO y la app calcula los demás valores."
+          }
+        }
+      }
+    },
+    "Settings" : {
+      "comment" : "Title of the settings screen and its toolbar button",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Settings"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ajustes"
+          }
+        }
+      }
+    },
+    "Show tutorial" : {
+      "comment" : "Settings row that replays the onboarding",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Show tutorial"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ver tutorial"
+          }
+        }
+      }
+    },
+    "Shutter" : {
+      "comment" : "Exposure setting name: shutter speed",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Shutter"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Velocidad"
+          }
+        }
+      }
+    },
+    "Skip" : {
+      "comment" : "Button that leaves the onboarding pages",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Skip"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Omitir"
+          }
+        }
+      }
+    },
+    "Spot" : {
+      "comment" : "Metering mode that measures only a tapped point",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Spot"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Puntual"
+          }
+        }
+      }
+    },
+    "Tap Measure to freeze the current reading. Tap again to keep measuring." : {
+      "comment" : "Help topic about holding a reading",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tap Measure to freeze the current reading. Tap again to keep measuring."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Toca Medir para congelar la lectura actual. Vuelve a tocar para seguir midiendo."
+          }
+        }
+      }
+    },
+    "Telephoto" : {
+      "comment" : "Name of the telephoto camera lens",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Telephoto"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Teleobjetivo"
+          }
+        }
+      }
+    },
+    "The adjustment is saved on your iPhone and applied to every measurement." : {
+      "comment" : "Calibration screen footnote",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The adjustment is saved on your iPhone and applied to every measurement."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "El ajuste se guarda en tu iPhone y se aplica a todas las mediciones."
+          }
+        }
+      }
+    },
+    "The ± button makes the suggestion brighter or darker than the reading, in steps of a third of a stop." : {
+      "comment" : "Help topic about exposure compensation",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The ± button makes the suggestion brighter or darker than the reading, in steps of a third of a stop."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "El botón ± hace la sugerencia más clara o más oscura que la lectura, en incrementos de un tercio de paso."
+          }
+        }
+      }
+    },
+    "Try again" : {
+      "comment" : "Button that retries starting the camera",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Try again"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Reintentar"
+          }
+        }
+      }
+    },
+    "Turn on camera access for Midgray in Settings to measure light." : {
+      "comment" : "Tells the user how to recover from a denied camera permission",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Turn on camera access for Midgray in Settings to measure light."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Activa el acceso a la cámara para Midgray en Ajustes para medir la luz."
+          }
+        }
+      }
+    },
+    "Ultra wide" : {
+      "comment" : "Name of the ultra wide camera lens",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ultra wide"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ultra gran angular"
+          }
+        }
+      }
+    },
+    "Version" : {
+      "comment" : "Settings row showing the app version",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Version"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versión"
+          }
+        }
+      }
+    },
+    "We need your camera" : {
+      "comment" : "Onboarding page 4 title",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "We need your camera"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Necesitamos tu cámara"
+          }
+        }
+      }
+    },
+    "When the scene is too bright or too dark for the camera to measure reliably, Midgray warns you and the reading may be off." : {
+      "comment" : "Help topic about out of range readings",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "When the scene is too bright or too dark for the camera to measure reliably, Midgray warns you and the reading may be off."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cuando la escena es demasiado clara o demasiado oscura para que la cámara mida con fiabilidad, Midgray te avisa y la lectura puede no ser exacta."
+          }
+        }
+      }
+    },
+    "Wide" : {
+      "comment" : "Name of the main wide camera lens",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wide"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gran angular"
+          }
+        }
+      }
+    },
+    "You choose, Midgray calculates" : {
+      "comment" : "Onboarding page 2 title",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "You choose, Midgray calculates"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tú eliges, Midgray calcula"
+          }
+        }
+      }
+    },
+    "Your settings, such as calibration and default lens, are stored only on this iPhone." : {
+      "comment" : "Privacy paragraph about settings",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Your settings, such as calibration and default lens, are stored only on this iPhone."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tus ajustes, como la calibración y la lente predeterminada, se guardan solo en este iPhone."
+          }
+        }
+      }
+    }
+  },
+  "version" : "1.3"
+}
