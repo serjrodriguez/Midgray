@@ -4,7 +4,7 @@ import CoreGraphics
 nonisolated protocol LightSensing: Sendable {
     var lenses: [CameraLens] { get }
 
-    func readings() -> AsyncStream<CameraReading>
+    func readings() -> AsyncThrowingStream<CameraReading, any Error>
     func selectLens(_ lens: CameraLens) async
     func setMeteringPoint(_ point: CGPoint?) async
 }

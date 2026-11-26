@@ -9,14 +9,14 @@ import Foundation
 @testable import Midgray
 
 struct ManualLightSensor: LightSensing {
-    private let stream: AsyncStream<CameraReading>
-    private let continuation: AsyncStream<CameraReading>.Continuation
+    private let stream: AsyncThrowingStream<CameraReading, any Error>
+    private let continuation: AsyncThrowingStream<CameraReading, any Error>.Continuation
 
     init() {
-        (stream, continuation) = AsyncStream.makeStream(of: CameraReading.self)
+        (stream, continuation) = AsyncThrowingStream.makeStream(of: CameraReading.self)
     }
 
-    func readings() -> AsyncStream<CameraReading> {
+    func readings() -> AsyncThrowingStream<CameraReading, any Error> {
         stream
     }
 

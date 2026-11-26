@@ -18,11 +18,11 @@ nonisolated struct SimulatedLightSensor: LightSensing {
         self.lenses = lenses
     }
 
-    func readings() -> AsyncStream<CameraReading> {
+    func readings() -> AsyncThrowingStream<CameraReading, any Error> {
         let offsets = offsets
         let interval = interval
 
-        return AsyncStream { continuation in
+        return AsyncThrowingStream { continuation in
             let task = Task {
                 guard !offsets.isEmpty else {
                     continuation.finish()

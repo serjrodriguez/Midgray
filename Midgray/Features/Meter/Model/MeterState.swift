@@ -16,6 +16,7 @@ nonisolated struct MeterReadout: Equatable {
 
 nonisolated enum MeterState: Equatable {
     case idle
+    case failed
     case measuring(MeterReadout)
     case outOfRange(MeterReadout)
 }

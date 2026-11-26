@@ -25,8 +25,8 @@ actor MeterCamera: LightSensing {
         lenses = MeterCamera.discoverLenses()
     }
 
-    nonisolated func readings() -> AsyncStream<CameraReading> {
-        AsyncStream(bufferingPolicy: .bufferingNewest(1)) { continuation in
+    nonisolated func readings() -> AsyncThrowingStream<CameraReading, any Error> {
+        AsyncThrowingStream(bufferingPolicy: .bufferingNewest(1)) { continuation in
             let task = Task { await self.run(continuation) }
             continuation.onTermination = { _ in task.cancel() }
         }
@@ -69,9 +69,9 @@ actor MeterCamera: LightSensing {
         device = newDevice
     }
 
-    private func run(_ continuation: AsyncStream<CameraReading>.Continuation) async {
+    private func run(_ continuation: AsyncThrowingStream<CameraReading, any Error>.Continuation) async {
         guard configureSession() else {
-            continuation.finish()
+            continuation.finish(throwing: LightSensingError.cameraUnavailable)
             return
         }
 

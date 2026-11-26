@@ -37,7 +37,7 @@ struct MeterViewModelTests {
 
     func currentReadout(_ viewModel: MeterViewModel) -> MeterReadout? {
         switch viewModel.state {
-        case .idle: return nil
+        case .idle, .failed: return nil
         case .measuring(let readout), .outOfRange(let readout): return readout
         }
     }

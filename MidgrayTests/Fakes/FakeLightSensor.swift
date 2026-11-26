@@ -11,9 +11,9 @@ import Foundation
 struct FakeLightSensor: LightSensing {
     let scriptedReadings: [CameraReading]
 
-    func readings() -> AsyncStream<CameraReading> {
+    func readings() -> AsyncThrowingStream<CameraReading, any Error> {
         let scripted = scriptedReadings
-        return AsyncStream { continuation in
+        return AsyncThrowingStream { continuation in
             for reading in scripted { continuation.yield(reading) }
             continuation.finish()
         }

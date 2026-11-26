@@ -18,7 +18,7 @@ struct MeterViewModelHoldTests {
 
     func currentEV(_ viewModel: MeterViewModel) -> Double? {
         switch viewModel.state {
-        case .idle: nil
+        case .idle, .failed: nil
         case .measuring(let readout), .outOfRange(let readout): readout.ev
         }
     }
