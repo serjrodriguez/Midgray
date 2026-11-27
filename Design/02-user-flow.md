@@ -38,7 +38,7 @@ Desde el Medidor:
 | ISO | Apertura y velocidad | ISO necesario |
 
 - En Auto el usuario puede tocar uno de los chips de exposiciones equivalentes para pasar a ese par.
-- Los valores que fija el usuario se ven como controles: al tocarlos o deslizar sobre ellos se expanden en una rueda propia (`ValueWheel`) que se cierra sola. El valor calculado se ve distinto (solo lectura, fondo claro).
+- Los valores que fija el usuario se ven como controles: al tocarlos o deslizar sobre ellos abren una rueda propia (`ValueWheel`) en un popover del sistema, encima de la celda (al costado en horizontal y en el Duo plegado). El valor se aplica cuando la rueda se detiene, y la rueda se cierra sola o al tocar fuera. El valor calculado se ve distinto (solo lectura, fondo claro).
 - Lectura en vivo con suavizado. El botón **Medir** retiene la lectura; un segundo toque vuelve a lectura en vivo.
 - Modo **Promedio** o **Puntual**. En puntual, un toque en la vista previa coloca el retículo.
 

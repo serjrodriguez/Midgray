@@ -69,6 +69,10 @@ struct ValueWheel<Value: Hashable>: View {
         }
         .shadow(color: .black.opacity(0.5), radius: 24, y: 8)
         .onAppear { feedback.prepare() }
+        .onDisappear {
+            commitPosition()
+            isScrolling = false
+        }
         .accessibilityElement()
         .accessibilityLabel(title)
         .accessibilityValue(format(selection))
@@ -80,7 +84,7 @@ struct ValueWheel<Value: Hashable>: View {
             ScrollView(.vertical) {
                 VStack(spacing: 0) {
                     ForEach(values, id: \.self) { value in
-                        let isSelected = value == selection
+                        let isSelected = value == position ?? selection
 
                         Text(format(value))
                             .font(.system(size: isSelected ? selectedSize : otherSize, weight: isSelected ? .semibold : .regular).monospacedDigit())
@@ -113,17 +117,23 @@ struct ValueWheel<Value: Hashable>: View {
                 isPositioned = true
             }
         }
-        .onChange(of: position) { _, new in
-            guard isPositioned, let new, new != selection else { return }
-            selection = new
-        }
         .onChange(of: selection) { _, new in
             guard isPositioned, position != new else { return }
             withAnimation(.snappy) { position = new }
         }
         .onScrollPhaseChange { _, phase in
             isScrolling = phase != .idle
+
+            if phase == .idle {
+                commitPosition()
+            }
         }
+    }
+
+    private func commitPosition() {
+        guard isPositioned, let position, position != selection else { return }
+
+        selection = position
     }
 
     private func chevron(_ name: String) -> some View {
