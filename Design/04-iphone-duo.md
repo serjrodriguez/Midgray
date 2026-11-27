@@ -63,3 +63,4 @@ Device Hub de Xcode permite simular el iPhone Duo, con botones para cerrado, par
 - Probar en un iPhone Duo real: solo se ha verificado en el simulador, que no tiene cámara.
 - En el simulador, los botones de la barra vertical aparecen vacíos un momento justo después de cambiar de postura y luego se dibujan. Comprobar si ocurre en el dispositivo.
 - Revisar la pantalla de permiso de cámara en el Duo.
+- Con el Duo parcialmente plegado, el popover de la rueda se abre encima de su propia celda y la tapa. Se puede usar; queda por ajustar.
