@@ -18,6 +18,9 @@ struct EditableValueCell: View {
 
     @State private var isWheelScrolling = false
     @State private var scrubStartValue: Double?
+    @State private var cellWidth: CGFloat = 0
+    @ScaledMetric(relativeTo: .title) private var sideWheelWidth: CGFloat = 113
+    @Environment(\.usesCompactValues) private var usesCompactValues
 
     private static let scrubStep: CGFloat = 28
 
@@ -37,17 +40,27 @@ struct EditableValueCell: View {
             .accessibilityAction { open() }
             .accessibilityHidden(isEditing)
             .contentShape(Rectangle())
-            .onTapGesture { open() }
+            .onTapGesture { isEditing ? close() : open() }
             .gesture(scrub)
             .overlay {
-                if isEditing {
-                    ValueWheel(title: title, values: values, selection: $selection, isScrolling: $isWheelScrolling, format: format)
-                        .simultaneousGesture(TapGesture().onEnded { close() })
-                        .transition(.scale(scale: 0.55).combined(with: .opacity))
-                }
+                RoundedRectangle(cornerRadius: Radius.r16)
+                    .strokeBorder(Color.accentColor, lineWidth: 2.5)
+                    .opacity(isEditing ? 1 : 0)
+                    .allowsHitTesting(false)
             }
-            .zIndex(isEditing ? 1 : 0)
-            .animation(.snappy, value: isEditing)
+            .onGeometryChange(for: CGFloat.self) { geometry in
+                geometry.size.width
+            } action: { width in
+                cellWidth = width
+            }
+            .popover(isPresented: $isEditing, arrowEdge: usesCompactValues ? .trailing : .bottom) {
+                ValueWheel(title: title, values: values, selection: $selection, isScrolling: $isWheelScrolling, format: format)
+                    .simultaneousGesture(TapGesture().onEnded { close() })
+                    .frame(width: usesCompactValues ? sideWheelWidth : cellWidth)
+                    .padding(Spacing.s8)
+                    .presentationCompactAdaptation(.popover)
+                    .presentationBackground(.clear)
+            }
             .onChange(of: isWheelScrolling) { _, scrolling in
                 isInteracting = scrolling
             }

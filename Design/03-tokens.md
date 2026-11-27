@@ -55,7 +55,7 @@ El archivo de Figma se actualizará a estos valores cuando se retoque el diseño
 | Componente | Figma |
 |---|---|
 | `ValueCell(kind: .input / .result)`; en fila con `usesCompactValues` | Cell/Input, Cell/Result, y "(row)" |
-| `ValueWheel` | Edición de valores, opción F |
+| `ValueWheel` | Edición de valores, opción F; presentada en popover, opciones G2 (vertical) y H1 (compacto) |
 | `EquivalentChip(isSelected:)` | Chip/Default, Chip/Selected |
 | `GlassPanel { }` | Liquid Glass – Regular – Large |
 | `PrimaryActionButton` | Button – Liquid Glass – Text |

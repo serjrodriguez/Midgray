@@ -55,7 +55,6 @@ struct ValueCellsRow: View {
                 format: { ExposureFormatter.isoValue($0) }
             )
         }
-        .zIndex(editing == nil ? 0 : 1)
         .onChange(of: mode) { editing = nil }
         .task(id: AutoCloseToken(editing: editing, isInteracting: isInteracting, aperture: aperture, shutterSpeed: shutterSpeed, iso: iso)) {
             guard editing != nil, !isInteracting else { return }
